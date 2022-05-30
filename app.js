@@ -12,7 +12,7 @@ const { agenda, jobsReady } = require('./services/agendaServices');
 const app = express();
 //app.use(expressValidator());
 // const PORT = configuration.port;
-const PORT = process.env.SHEDULER_SERVICE_URL ? process.env.SHEDULER_SERVICE_URL : configuration.port;
+const PORT = process.env.SHEDULER_SERVICE_PORT ? process.env.SHEDULER_SERVICE_PORT : configuration.port;
 
 agenda;
 jobsReady;
