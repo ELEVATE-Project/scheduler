@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const dbConnection = mongoose.createConnection(
     process.env.MONGODB_URL,

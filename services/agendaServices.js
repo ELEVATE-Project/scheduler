@@ -12,9 +12,8 @@ const needle = require('needle');
 const responseMessage = require('../generics/constants/responseMessage')
 const httpResponse = require('../generics/constants/httpResponse')
 
-const {sendErrorMail} = require('../controllers/utils');
+const {sendErrorMail} = require('../generics/utils');
 const log = require("../models/log");
-const axios = require('axios');
 
 //connect Agenda to default collection--agendaJobs
 const agenda = new Agenda({
