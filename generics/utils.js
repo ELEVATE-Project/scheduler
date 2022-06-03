@@ -29,7 +29,7 @@ const sendErrorMail = async ( email ) => {
         await kafkaCommunication.pushEmailToKafka( payload );
 
     } catch (err) {
-        console.log("error : ",err)
+        throw err;
     }
     
 };
