@@ -20,7 +20,6 @@ const pushPayloadToKafka = (payload) => {
             if (error) {
                 reject(error);
             }
-            console.log("data : ",data)
             resolve(data);
         });
     });

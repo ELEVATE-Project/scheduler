@@ -50,8 +50,7 @@ const defineJob = async ( job, jobs, agenda ) => {
     agenda.define( name, async (job) => {
 
       //needle is being implemented here
-        console.log("API call details : ",method,url);
-      
+        
         const options = {
           headers : header ? header : {}
         }
@@ -59,7 +58,6 @@ const defineJob = async ( job, jobs, agenda ) => {
         .then(function(response) {
           let status = "success"
           addExicutionLog( jobDef, status, {"response" : "SUCCESS" }, job.attrs.lastRunAt );
-          console.log("response : ",response.body)
           return "good"
         })
         .catch(function(err) {
