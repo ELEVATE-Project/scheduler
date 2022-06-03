@@ -46,20 +46,20 @@ const jobsReady = agenda._ready.then( async () => {
 //Defining agenda job . job details are added to the collection.
 const defineJob = async ( job, jobs, agenda ) => {
     let jobDef = job;
-    const{ name, url, method, owner, email, body } = job;
+    const{ name, url, method, owner, email,header } = job;
     agenda.define( name, async (job) => {
 
       //needle is being implemented here
-        console.log("API call details : ",method,url,body,job.attrs);
-        // const options = data.body || {};
-        // const format = data.format || {};
-        
-        await needle( method, url)
+        console.log("API call details : ",method,url);
+      
+        const options = {
+          headers : header ? header : {}
+        }
+        await needle( method, url, options )
         .then(function(response) {
-          console.log("job.attrs.lastRunAt  : ",job.attrs.lastRunAt)
           let status = "success"
           addExicutionLog( jobDef, status, {"response" : "SUCCESS" }, job.attrs.lastRunAt );
-          //console.log("response : ",response)
+          console.log("response : ",response.body)
           return "good"
         })
         .catch(function(err) {

@@ -5,14 +5,12 @@ const bodyParser = require('body-parser');
 const configuration = require('./config');
 const router = require('./route/routes');
 const { agenda, jobsReady } = require('./services/agendaServices');
-//const expressValidator = require('express-validator');
 
 
 //express
 const app = express();
-//app.use(expressValidator());
-// const PORT = configuration.port;
-const PORT = process.env.SHEDULER_SERVICE_PORT ? process.env.SHEDULER_SERVICE_PORT : configuration.port;
+
+const PORT = process.env.APPLICATION_PORT ? process.env.APPLICATION_PORT : configuration.port;
 
 agenda;
 jobsReady;
