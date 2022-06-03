@@ -10,7 +10,7 @@ const { agenda, jobsReady } = require('./services/agendaServices');
 //express
 const app = express();
 
-const PORT = process.env.APPLICATION_PORT ? process.env.APPLICATION_PORT : configuration.port;
+const PORT = process.env.APPLICATION_PORT 
 
 agenda;
 jobsReady;
