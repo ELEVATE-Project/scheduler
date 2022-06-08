@@ -1,7 +1,6 @@
 module.exports = {
     
     validation :  (req, res, next) => {
-        console.log(req.body);
         
         req.checkBody( 'name', 'required job name').notEmpty();
         req.checkBody( 'request.method', 'required method').notEmpty();

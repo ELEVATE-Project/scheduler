@@ -15,17 +15,16 @@ const checkForDuplicateJobDefinition = async (job, jobs) => {
 };
 
 //push error mail to Kafka
-const sendErrorMail = async ( email ) => {
+const sendErrorMail = async ( email, jobData, errorDetails ) => {
     try {
         const payload = {
             type: "email",
             email: {
                 to: email,
-                subject: 'Job Failure Report', // Subject line
-                body: 'Your scheduled task failed. Please contact support team' // Plain text body
+                subject: 'Job Failure Report : ' + jobData.name, // Subject line
+                body: `Details Name : ${jobData.name} URL : ${jobData.request.url} Fail reason : ${JSON.stringify( errorDetails )}` 
             }
         };
-
         await kafkaCommunication.pushEmailToKafka( payload );
 
     } catch (err) {

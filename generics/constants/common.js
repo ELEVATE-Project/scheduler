@@ -8,5 +8,7 @@
 module.exports = {
     "ONCE" : "once",
     "NOW" : "now",
-    "EVERY" : "every"
+    "EVERY" : "every", 
+    "SUCCESS" : "success",
+    "FAILED" : "failed"
 };

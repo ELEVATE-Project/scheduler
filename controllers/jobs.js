@@ -339,8 +339,8 @@ const updateJob = async ( req, res ) => {
     try {
         //add param validation
         const job = req.body || {};
-        job.name=req.params.jobname;
-        const jobs=await jobsReady;
+        job.name = req.params.jobname;
+        const jobs = await jobsReady;
         const jobExist = await utils.checkForDuplicateJobDefinition( job, jobs );
         if ( jobExist > 0 ) {
             await defineJob( job, jobs, agenda );

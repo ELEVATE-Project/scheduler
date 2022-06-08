@@ -11,6 +11,7 @@ const configuration = require('../config');
 const needle = require('needle');
 const responseMessage = require('../generics/constants/responseMessage')
 const httpResponse = require('../generics/constants/httpResponse')
+const common = require('../generics/constants/common')
 
 const {sendErrorMail} = require('../generics/utils');
 const log = require("../models/log");
@@ -46,27 +47,29 @@ const jobsReady = agenda._ready.then( async () => {
 //Defining agenda job . job details are added to the collection.
 const defineJob = async ( job, jobs, agenda ) => {
     let jobDef = job;
-    const{ name, url, method, owner, email, body } = job;
+    const{ name, request, email } = job;
     agenda.define( name, async (job) => {
 
       //needle is being implemented here
-        console.log("API call details : ",method,url,body,job.attrs);
-        // const options = data.body || {};
-        // const format = data.format || {};
+
+        //adding header details
+        const options = {
+          headers : request.header ? request.header : {}
+        }
         
-        await needle( method, url)
+        await needle( request.method, request.url, options)
         .then(function(response) {
-          console.log("job.attrs.lastRunAt  : ",job.attrs.lastRunAt)
-          let status = "success"
-          addExicutionLog( jobDef, status, {"response" : "SUCCESS" }, job.attrs.lastRunAt );
-          //console.log("response : ",response)
+          
+          addExicutionLog( jobDef, common.SUCCESS, { "response" : common.SUCCESS }, job.attrs.lastRunAt );
           return "good"
+
         })
         .catch(function(err) {
-          console.log("error : ",err)
-          let status = "failed"
-          addExicutionLog( jobDef, status, err, job.attrs.lastRunAt );
-          sendErrorMail(email);
+
+          addExicutionLog( jobDef, common.FAILED, err, job.attrs.lastRunAt );
+          //send mail notification in case of an error
+          sendErrorMail( email, jobDef, err );
+
         })
         
         
