@@ -1,6 +1,5 @@
 module.exports={
-    port:'6000',
-    mongourl:"mongodb://localhost:27017/tl-cron-rest",
+    mongourl: process.env.MONGODB_URL,
     collection: 'agendaJob',
     definition:'jobDefinition'
 };

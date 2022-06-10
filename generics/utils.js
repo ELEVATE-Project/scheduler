@@ -28,7 +28,7 @@ const sendErrorMail = async ( email, jobData, errorDetails ) => {
         await kafkaCommunication.pushEmailToKafka( payload );
 
     } catch (err) {
-        console.log("error : ",err)
+        throw err;
     }
     
 };

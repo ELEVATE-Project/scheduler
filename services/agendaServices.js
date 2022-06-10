@@ -20,7 +20,7 @@ const log = require("../models/log");
 const agenda = new Agenda({
   db : {
       address : configuration.mongourl,
-      collection : configuration.collection?configuration.collection:undefined
+      collection : configuration.collection ? configuration.collection : undefined
   }
 
 });
