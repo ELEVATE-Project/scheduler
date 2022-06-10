@@ -1,11 +1,10 @@
 module.exports = {
     
     validation :  (req, res, next) => {
-        console.log(req.body);
         
         req.checkBody( 'name', 'required job name').notEmpty();
-        req.checkBody( 'method', 'required method').notEmpty();
-        req.checkBody( 'url', 'required url').notEmpty();
+        req.checkBody( 'request.method', 'required method').notEmpty();
+        req.checkBody( 'request.url', 'required url').notEmpty();
         req.checkBody('email', 'required email')
             .trim()
             .notEmpty()
@@ -13,7 +12,7 @@ module.exports = {
             .matches(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
             .withMessage('email is invalid')
             .normalizeEmail();
-        req.checkBody( 'scheduleType', 'required schedule type').notEmpty();
+        req.checkBody( 'schedule.scheduleType', 'required schedule type').notEmpty();
         
         let validationErr = req.validationErrors();
         if ( validationErr ) {

@@ -23,26 +23,27 @@ const httpResponse = require('../generics/constants/httpResponse');
 
 const createJobDefinition = async( jobData ) => {
     try {
-        const jobDetails = _.omit( jobData, ['scheduleType', 'interval'] );
+        const jobDetails = _.omit( jobData, ['schedule'] );
         const job = jobDetails || {};
         const jobs = await jobsReady;
         const jobExists = await utils.checkForDuplicateJobDefinition( job, jobs );
-
+    
         if ( jobExists == 0 ) {
             
             const newJobData = await defineJob( job, jobs, agenda );
 
             if ( newJobData && newJobData.success ) {
-                const instanceType = ( jobData.scheduleType || '' ).toLowerCase();
+                const instanceType = ( jobData.schedule.scheduleType || '' ).toLowerCase();
 
-                if ( instanceType == common.ONCE && jobData.interval && jobData.interval != "" ) {
-                    const newInstance = await createJobInstanceForOnce( jobData.name, jobData.interval );
+                if ( instanceType == common.ONCE && jobData.schedule.interval && jobData.schedule.interval != "" ) {
+                    const newInstance = await createJobInstanceForOnce( jobData.name, jobData.schedule.interval );
                     return newInstance;
-                } else if ( instanceType == common.EVERY  && jobData.interval && jobData.interval != "" ) {
-                    const newInstance = await createJobInstanceForEvery( jobData.name, jobData.interval );
+                } else if ( instanceType == common.EVERY  && jobData.schedule.interval && jobData.schedule.interval != "" ) {
+                    const newInstance = await createJobInstanceForEvery( jobData.name, jobData.schedule.interval );
                     return newInstance;
                 } else {
-                    const newInstance = await createJobInstanceForNow( jobData.name, jobData.interval );
+                    
+                    const newInstance = await createJobInstanceForNow( jobData.name );
                     return newInstance;
                 }          
             }
