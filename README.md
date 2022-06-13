@@ -48,9 +48,9 @@ APPLICATION_PORT = 4000
 
 ## 4. Install Npm
 	From src directory execute :
-	```javascript
+
     npm i
-	```
+
     To install the dependencies in your local machine.
 
 ## 5. To Run server
