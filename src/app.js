@@ -2,7 +2,6 @@ require("dotenv").config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const configuration = require('./config');
 const router = require('./route/routes');
 const { agenda, jobsReady } = require('./services/agendaServices');
 
