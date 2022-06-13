@@ -48,7 +48,9 @@ APPLICATION_PORT = 4000
 
 ## 4. Install Npm
 	From src directory execute :
+	```javascript
     npm i
+	```
     To install the dependencies in your local machine.
 
 ## 5. To Run server
@@ -71,7 +73,7 @@ Add new job definitions. And schedule it.
 
 Data required:
 ```javascript
-
+{
 	name : //Name for job,
 	email : [] ////error reporting mail id/ids,   
     request : {
@@ -83,7 +85,7 @@ Data required:
          scheduleType : //every,once and now,
         interval : //time - optional ( not required for type now )
     }
-
+}
 ```
 ## POST:/jobs/now
 Schedule a defined job for immediate call(now).
