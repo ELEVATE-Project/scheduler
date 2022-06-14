@@ -15,7 +15,7 @@ const common = require('../generics/constants/common')
 
 const { sendErrorMail } = require('../generics/utils')
 const log = require('../models/log')
-let prettier = 5
+
 //connect Agenda to default collection--agendaJobs
 const agenda = new Agenda({
 	db: {
