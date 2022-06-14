@@ -1,20 +1,19 @@
 /**
- * name : common.js
+ * name : agendaServices.js
  * author : Vishnudas
  * created-date : 19-may-2022
- * Description : all common constants
+ * Description : agenda services.
  */
 
 //Dependencies
 const Agenda = require('agenda')
-const configuration = require('../config')
+const configuration = require('@root/config')
 const needle = require('needle')
-const responseMessage = require('../generics/constants/responseMessage')
-const httpResponse = require('../generics/constants/httpResponse')
-const common = require('../generics/constants/common')
-
-const { sendErrorMail } = require('../generics/utils')
-const log = require('../models/log')
+const responseMessage = require('@constants/responseMessage')
+const httpResponse = require('@constants/httpResponse')
+const common = require('@constants/common')
+const { sendErrorMail } = require('@generics/utils')
+const log = require('@models/log')
 
 //connect Agenda to default collection--agendaJobs
 const agenda = new Agenda({

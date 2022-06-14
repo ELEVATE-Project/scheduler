@@ -13,11 +13,6 @@ const { jobsReady, agenda, defineJob } = require('@services/agendaServices')
 const jobsHelper = require('@services/jobs')
 const utils = require('@generics/utils')
 
-// const responseMessage = require('../generics/constants/responseMessage');
-// const httpResponse = require('../generics/constants/httpResponse');
-// const { jobsReady, agenda, defineJob } = require('../services/agendaServices');
-// const jobsHelper = require('../services/jobs');
-// const utils = require('../generics/utils');
 /**
  * @api {get} /jobs/jobList
  * Jobs List
