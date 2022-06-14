@@ -1,26 +1,37 @@
 {
-  "name": "tl-cron-rest",
-  "version": "1.0.0",
-  "description": "cron wrapper on agenda",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
-  },
-  "author": "vishnudas",
-  "license": "ISC",
-  "dependencies": {
-    "5": "^0.0.1",
-    "agenda": "^4.2.1",
-    "dotenv": "^16.0.1",
-    "express": "^4.17.2",
-    "express-validator": "^5.3.1",
-    "kafka-node": "^5.0.0",
-    "lodash": "^4.17.21",
-    "mongoose": "^6.3.4",
-    "needle": "^3.0.0",
-    "nodemailer": "^6.7.2",
-    "nodemon": "^2.0.15",
-    "sendmail": "^1.6.1"
-  }
+	"name": "tl-cron-rest",
+	"version": "1.0.0",
+	"description": "cron wrapper on agenda",
+	"main": "app.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 0",
+		"start": "nodemon app.js",
+		"prepare": "cd .. && husky install src/.husky"
+	},
+	"author": "vishnudas",
+	"license": "ISC",
+	"dependencies": {
+		"5": "^0.0.1",
+		"agenda": "^4.2.1",
+		"dotenv": "^16.0.1",
+		"express": "^4.17.2",
+		"express-validator": "^5.3.1",
+		"kafka-node": "^5.0.0",
+		"lodash": "^4.17.21",
+		"mongoose": "^6.3.4",
+		"needle": "^3.0.0",
+		"nodemailer": "^6.7.2",
+		"nodemon": "^2.0.15",
+		"sendmail": "^1.6.1"
+	},
+	"devDependencies": {
+		"eslint": "^8.17.0",
+		"husky": "^8.0.1",
+		"lint-staged": "^13.0.1",
+		"prettier": "^2.6.2"
+	},
+	"lint-staged": {
+		"../*": "prettier --ignore-unknown --write",
+		"*": "prettier --ignore-unknown --write"
+	}
 }
