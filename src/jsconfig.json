@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es6",
+		"baseUrl": "./",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"paths": {
+			"@configs*": ["./configs*"],
+			"@controllers*": ["./controllers*"],
+			"@generics*": ["./generics*"],
+			"@constants*": ["./generics/constants*"],
+			"@models": ["./models*"],
+			"@routes*": ["./route*"],
+			"@services*": ["./services*"],
+			"@validator*": ["./validator*"]
+		}
+	},
+	"exclude": ["node_modules"]
+}
