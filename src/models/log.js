@@ -23,6 +23,11 @@ const logsSchema = new Schema({
 	exicutionStatus: {
 		type: String,
 	},
+	expireAt: {
+		type: Date,
+		default: Date.now,
+		index: { expires: '10080m' },
+	},
 })
 
 const Logs = connection.model('logs', logsSchema)
