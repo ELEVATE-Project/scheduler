@@ -11,11 +11,9 @@ const app = express()
 
 const PORT = process.env.APPLICATION_PORT
 
-agenda
-jobsReady
-
 //config
 require('./configs')
+jobsReady
 
 //middleware definition
 app.use(bodyParser.json({ limit: '50MB' }))

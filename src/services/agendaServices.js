@@ -6,7 +6,6 @@
  */
 
 //Dependencies
-const Agenda = require('agenda')
 const configuration = require('@root/config')
 const needle = require('needle')
 const responseMessage = require('@constants/responseMessage')
@@ -14,14 +13,7 @@ const httpResponse = require('@constants/httpResponse')
 const common = require('@constants/common')
 const { sendErrorMail } = require('@generics/utils')
 const log = require('@models/log')
-
-//connect Agenda to default collection--agendaJobs
-const agenda = new Agenda({
-	db: {
-		address: configuration.mongourl,
-		collection: configuration.collection ? configuration.collection : undefined,
-	},
-})
+const { agenda } = require('@configs/agenda')
 
 //restart agenda instances when server restarts
 const jobsReady = agenda._ready.then(async () => {

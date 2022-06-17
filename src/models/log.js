@@ -23,10 +23,10 @@ const logsSchema = new Schema({
 	exicutionStatus: {
 		type: String,
 	},
-	expireAt: {
+	expire_at: {
 		type: Date,
 		default: Date.now,
-		index: { expires: '10080m' },
+		index: { expires: 604800 },
 	},
 })
 
