@@ -9,7 +9,7 @@
 			"@configs*": ["./configs*"],
 			"@controllers*": ["./controllers*"],
 			"@generics*": ["./generics*"],
-			"@constants*": ["./generics/constants*"],
+			"@constants*": ["./constants*"],
 			"@models": ["./models*"],
 			"@routes*": ["./route*"],
 			"@services*": ["./services*"],
