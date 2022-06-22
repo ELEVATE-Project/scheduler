@@ -1,24 +1,23 @@
 require('module-alias/register')
 require('dotenv').config()
-
 const express = require('express')
 const bodyParser = require('body-parser')
-const router = require('./route/routes')
-const { agenda, jobsReady } = require('./services/agendaServices')
+
+//config
+require('./configs')
+const { jobsReady } = require('./services/agendaServices')
 
 //express
 const app = express()
 
 const PORT = process.env.APPLICATION_PORT
 
-//config
-require('./configs')
-jobsReady
-
 //middleware definition
 app.use(bodyParser.json({ limit: '50MB' }))
 app.use(bodyParser.urlencoded({ limit: '50MB', extended: false }))
-app.use('/', router)
+
+/* Registered routes here */
+require('./routes')(app)
 
 //starting the server at port defined in config.js
 const server = app.listen(PORT, () => {

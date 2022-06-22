@@ -9,7 +9,7 @@
 const utils = require('@generics/utils')
 const _ = require('lodash')
 const common = require('@constants/common')
-const { jobsReady, agenda, defineJob, scheduleEvery, scheduleNow, scheduleOnce } = require('./agendaServices')
+const { jobsReady, defineJob, scheduleEvery, scheduleNow, scheduleOnce } = require('./agendaServices')
 const responseMessage = require('@constants/responseMessage')
 const httpResponse = require('@constants/httpResponse')
 
@@ -26,6 +26,7 @@ const createJobDefinition = async (jobData) => {
 		const jobDetails = _.omit(jobData, ['schedule'])
 		const job = jobDetails || {}
 		const jobs = await jobsReady
+
 		const jobExists = await utils.checkForDuplicateJobDefinition(job, jobs)
 
 		if (jobExists == 0) {

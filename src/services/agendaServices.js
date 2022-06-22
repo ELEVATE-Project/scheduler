@@ -13,12 +13,10 @@ const httpResponse = require('@constants/httpResponse')
 const common = require('@constants/common')
 const { sendErrorMail } = require('@generics/utils')
 const log = require('@models/log')
-const { agenda } = require('@configs/agenda')
 
 //restart agenda instances when server restarts
 const jobsReady = agenda._ready.then(async () => {
 	const jobDefCollection = agenda._mdb.collection(configuration.definition)
-
 	jobDefCollection.toArray = () => {
 		const jobsCursor = jobDefCollection.find()
 		return jobsCursor.toArray.bind(jobsCursor)()
@@ -36,7 +34,6 @@ const defineJob = async (job, jobs, agenda) => {
 	const { name, request, email } = job
 	agenda.define(name, async (job) => {
 		//needle is being implemented here
-
 		//adding header details
 		const options = {
 			headers: request.header ? request.header : {},
@@ -53,8 +50,7 @@ const defineJob = async (job, jobs, agenda) => {
 				sendErrorMail(email, jobDef, err)
 			})
 	})
-
-	await jobs
+	let data = await jobs
 		.countDocuments({ name })
 		.then((count) => (count < 1 ? jobs.insertOne(job) : jobs.updateOne({ name }, { $set: job })))
 
@@ -132,19 +128,11 @@ const addExicutionLog = async (job, status, resp, time) => {
 		response: resp,
 		exicutionStatus: status,
 	})
-	await report
-		.save()
-		.then((doc) => {
-			console.log(doc)
-		})
-		.catch((err) => {
-			console.error(err)
-		})
+	await report.save()
 }
 
 module.exports = {
 	defineJob,
-	agenda,
 	jobsReady,
 	scheduleEvery,
 	scheduleNow,

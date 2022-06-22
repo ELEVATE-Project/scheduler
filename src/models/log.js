@@ -6,7 +6,8 @@
  **/
 // Dependencies
 const mongoose = require('mongoose')
-const connection = require('@configs/mongodb')
+//require('@configs/mongodb')
+
 const Schema = mongoose.Schema
 
 const logsSchema = new Schema({
@@ -29,6 +30,5 @@ const logsSchema = new Schema({
 		index: { expires: 604800 },
 	},
 })
-
-const Logs = connection.model('logs', logsSchema)
+const Logs = db.model('logs', logsSchema)
 module.exports = Logs

@@ -15,7 +15,4 @@ const agenda = new Agenda({
 		collection: configuration.collection ? configuration.collection : undefined,
 	},
 })
-
-module.exports = {
-	agenda,
-}
+global.agenda = agenda

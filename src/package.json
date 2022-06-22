@@ -43,8 +43,9 @@
 		"@generics": "generics",
 		"@constants": "constants",
 		"@models": "models",
-		"@routes": "route",
+		"@routes": "routes",
 		"@services": "services",
-		"@validator": "validator"
+		"@validators": "validators",
+		"@middlewares": "middlewares"
 	}
 }
