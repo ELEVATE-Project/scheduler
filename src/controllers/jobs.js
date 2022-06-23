@@ -12,6 +12,7 @@ const httpResponse = require('@constants/httpResponse')
 const { jobsReady, defineJob } = require('@services/agendaServices')
 const jobsHelper = require('@services/jobs')
 const utils = require('@generics/utils')
+const common = require('@constants/common')
 
 module.exports = class Jobs {
 	/**
@@ -39,14 +40,15 @@ module.exports = class Jobs {
 
 	async scheduleJob(req, res) {
 		try {
-			console.log('reached here')
 			let newJob = await jobsHelper.createJobDefinition(req.body)
 			res.status(newJob.status).json(newJob)
 		} catch (err) {
-			res.status(400).json({
-				message: err,
-				status: httpResponse.BAD_REQUEST,
-			})
+			res.status(400).json(
+				common.failureResponse({
+					message: err,
+					status: httpResponse.BAD_REQUEST,
+				})
+			)
 		}
 	}
 
@@ -85,18 +87,22 @@ module.exports = class Jobs {
 	async jobList(req, res) {
 		try {
 			const list = await jobsReady.then((jobs) => jobs.toArray())
-			res.status(200).json({
-				message: responseMessage.JOB_LIST_FETCH_SUCCESS,
-				status: httpResponse.OK,
-				result: {
-					data: list,
-				},
-			})
+			res.status(200).json(
+				common.successResponse({
+					message: responseMessage.JOB_LIST_FETCH_SUCCESS,
+					status: httpResponse.OK,
+					result: {
+						data: list,
+					},
+				})
+			)
 		} catch (err) {
-			res.status(400).json({
-				message: err,
-				status: httpResponse.BAD_REQUEST,
-			})
+			res.status(400).json(
+				common.failureResponse({
+					message: err,
+					status: httpResponse.BAD_REQUEST,
+				})
+			)
 		}
 	}
 
@@ -129,10 +135,12 @@ module.exports = class Jobs {
 			const newInstance = await jobsHelper.createJobInstanceForEvery(req.body.name, req.body.interval)
 			res.status(newInstance.status).json(newInstance)
 		} catch (err) {
-			res.status(400).json({
-				message: err,
-				status: httpResponse.BAD_REQUEST,
-			})
+			res.status(400).json(
+				common.failureResponse({
+					message: err,
+					status: httpResponse.BAD_REQUEST,
+				})
+			)
 		}
 	}
 
@@ -165,10 +173,12 @@ module.exports = class Jobs {
 			const newInstance = await jobsHelper.createJobInstanceForNow(req.body.name)
 			res.status(newInstance.status).json(newInstance)
 		} catch (err) {
-			res.status(400).json({
-				message: err,
-				status: httpResponse.BAD_REQUEST,
-			})
+			res.status(400).json(
+				common.failureResponse({
+					message: err,
+					status: httpResponse.BAD_REQUEST,
+				})
+			)
 		}
 	}
 
@@ -201,10 +211,12 @@ module.exports = class Jobs {
 			const newInstance = await jobsHelper.createJobInstanceForOnce(req.body.name, req.body.interval)
 			res.status(newInstance.status).json(newInstance)
 		} catch (err) {
-			res.status(400).json({
-				message: err,
-				status: httpResponse.BAD_REQUEST,
-			})
+			res.status(400).json(
+				common.failureResponse({
+					message: err,
+					status: httpResponse.BAD_REQUEST,
+				})
+			)
 		}
 	}
 
@@ -236,24 +248,30 @@ module.exports = class Jobs {
 			//add validation for job name
 			const cancelInstance = await agenda.cancel({ name: req.body.name })
 			if (cancelInstance > 0) {
-				res.status(200).json({
-					message: cancelInstance + responseMessage.JOB_INSTANCE_CANCELLED,
-					success: true,
-					status: httpResponse.OK,
-				})
+				res.status(200).json(
+					common.successResponse({
+						message: cancelInstance + responseMessage.JOB_INSTANCE_CANCELLED,
+						success: true,
+						status: httpResponse.OK,
+					})
+				)
 			} else {
-				res.status(400).json({
-					message: responseMessage.INSTANCE_NOT_PRESENT,
+				res.status(400).json(
+					common.failureResponse({
+						message: responseMessage.INSTANCE_NOT_PRESENT,
+						success: false,
+						status: httpResponse.BAD_REQUEST,
+					})
+				)
+			}
+		} catch (err) {
+			res.status(400).json(
+				common.failureResponse({
+					message: err,
 					success: false,
 					status: httpResponse.BAD_REQUEST,
 				})
-			}
-		} catch (err) {
-			res.status(400).json({
-				message: err,
-				success: false,
-				status: httpResponse.BAD_REQUEST,
-			})
+			)
 		}
 	}
 
@@ -292,25 +310,31 @@ module.exports = class Jobs {
 				if (jobExist > 0) {
 					await agenda.cancel({ name: job.name })
 					await jobs.deleteOne({ name: job.name })
-					res.status(200).json({
-						message: responseMessage.JOB_DELETED,
-						success: true,
-						status: httpResponse.OK,
-					})
+					res.status(200).json(
+						common.successResponse({
+							message: responseMessage.JOB_DELETED,
+							success: true,
+							status: httpResponse.OK,
+						})
+					)
 				} else {
-					res.status(400).json({
-						message: responseMessage.JOB_NOT_FOUND,
-						success: false,
-						status: httpResponse.BAD_REQUEST,
-					})
+					res.status(400).json(
+						common.failureResponse({
+							message: responseMessage.JOB_NOT_FOUND,
+							success: false,
+							status: httpResponse.BAD_REQUEST,
+						})
+					)
 				}
 			}
 		} catch (err) {
-			res.status(400).json({
-				message: err,
-				success: false,
-				status: httpResponse.BAD_REQUEST,
-			})
+			res.status(400).json(
+				common.failureResponse({
+					message: err,
+					success: false,
+					status: httpResponse.BAD_REQUEST,
+				})
+			)
 		}
 	}
 
@@ -346,24 +370,30 @@ module.exports = class Jobs {
 			const jobExist = await utils.checkForDuplicateJobDefinition(job, jobs)
 			if (jobExist > 0) {
 				await defineJob(job, jobs, agenda)
-				res.status(200).json({
-					message: responseMessage.JOB_UPDATED,
-					success: true,
-					status: httpResponse.OK,
-				})
+				res.status(200).json(
+					common.successResponse({
+						message: responseMessage.JOB_UPDATED,
+						success: true,
+						status: httpResponse.OK,
+					})
+				)
 			} else {
-				res.status(400).json({
-					message: responseMessage.JOB_NOT_FOUND,
+				res.status(400).json(
+					common.failureResponse({
+						message: responseMessage.JOB_NOT_FOUND,
+						success: false,
+						status: httpResponse.BAD_REQUEST,
+					})
+				)
+			}
+		} catch (err) {
+			res.status(400).json(
+				common.failureResponse({
+					message: err,
 					success: false,
 					status: httpResponse.BAD_REQUEST,
 				})
-			}
-		} catch (err) {
-			res.status(400).json({
-				message: err,
-				success: false,
-				status: httpResponse.BAD_REQUEST,
-			})
+			)
 		}
 	}
 }

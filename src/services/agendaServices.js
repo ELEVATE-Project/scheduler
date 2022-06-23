@@ -41,6 +41,7 @@ const defineJob = async (job, jobs, agenda) => {
 
 		needle(request.method, request.url, options)
 			.then(function (response) {
+				console.log('job executed successfully')
 				addExicutionLog(jobDef, common.SUCCESS, { response: common.SUCCESS }, job.attrs.lastRunAt)
 				return 'good'
 			})
@@ -66,17 +67,17 @@ const scheduleEvery = async (scheduleData, agenda) => {
 		const interval = scheduleData.interval
 		const schedule = await agenda.every(interval, name)
 
-		return {
+		return common.successResponse({
 			message: responseMessage.SHEDULE_ONCE_SUCCESS,
 			success: true,
 			status: httpResponse.OK,
-		}
+		})
 	} catch (err) {
-		return {
+		return common.failureResponse({
 			message: responseMessage.SHEDULING_FAILED + err,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
-		}
+		})
 	}
 }
 
@@ -85,17 +86,17 @@ const scheduleNow = async (jobName, agenda) => {
 	try {
 		const schedule = await agenda.now(jobName)
 
-		return {
+		return common.successResponse({
 			message: responseMessage.SHEDULE_ONCE_SUCCESS,
 			success: true,
 			status: httpResponse.OK,
-		}
+		})
 	} catch (err) {
-		return {
+		return common.failureResponse({
 			message: responseMessage.SHEDULING_FAILED + err,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
-		}
+		})
 	}
 }
 
@@ -106,17 +107,17 @@ const scheduleOnce = async (scheduleData, agenda) => {
 		const interval = scheduleData.interval
 		const schedule = await agenda.schedule(interval, name)
 
-		return {
+		return common.successResponse({
 			message: responseMessage.SHEDULE_ONCE_SUCCESS,
 			success: true,
 			status: httpResponse.OK,
-		}
+		})
 	} catch (err) {
-		return {
+		return commom.failureResponse({
 			message: responseMessage.SHEDULING_FAILED + err,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
-		}
+		})
 	}
 }
 

@@ -51,18 +51,18 @@ const createJobDefinition = async (jobData) => {
 				}
 			}
 		} else {
-			return {
+			return common.failureResponse({
 				message: responseMessage.JOB_DEFINITION_ALREADY_EXISTS,
 				success: false,
 				status: httpResponse.BAD_REQUEST,
-			}
+			})
 		}
 	} catch (err) {
-		return {
+		return common.failureResponse({
 			message: err,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
-		}
+		})
 	}
 }
 
@@ -90,18 +90,18 @@ const createJobInstanceForOnce = async (jobName, scheduleTime) => {
 			const scheduleJob = await scheduleOnce(job, agenda)
 			return scheduleJob
 		} else {
-			return {
+			return common.failureResponse({
 				message: responseMessage.JOB_DEFINITION_NOT_FOUND,
 				success: false,
 				status: httpResponse.BAD_REQUEST,
-			}
+			})
 		}
 	} catch (err) {
-		return {
+		return common.failureResponse({
 			message: err,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
-		}
+		})
 	}
 }
 
@@ -129,18 +129,18 @@ const createJobInstanceForEvery = async (jobName, scheduleInterval) => {
 			const scheduleJob = await scheduleEvery(job, agenda)
 			return scheduleJob
 		} else {
-			return {
+			return common.failureResponse({
 				message: responseMessage.JOB_DEFINITION_NOT_FOUND,
 				success: false,
 				status: httpResponse.BAD_REQUEST,
-			}
+			})
 		}
 	} catch (err) {
-		return {
+		return common.failureResponse({
 			message: err,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
-		}
+		})
 	}
 }
 
@@ -166,18 +166,18 @@ const createJobInstanceForNow = async (jobName) => {
 			const scheduleJob = await scheduleNow(jobName, agenda)
 			return scheduleJob
 		} else {
-			return {
+			return common.failureResponse({
 				message: responseMessage.JOB_DEFINITION_NOT_FOUND,
 				success: false,
 				status: httpResponse.BAD_REQUEST,
-			}
+			})
 		}
 	} catch (err) {
-		return {
+		return common.failureResponse({
 			message: err,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
-		}
+		})
 	}
 }
 
