@@ -10,7 +10,6 @@ const mongoose = require('mongoose')
 
 module.exports = function () {
 	// Added to remove depreciation warnings from logs.
-	console.log('in mongodb.js')
 	const db = mongoose.createConnection(process.env.MONGODB_URL, {
 		useNewUrlParser: true,
 	})

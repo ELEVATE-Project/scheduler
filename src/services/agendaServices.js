@@ -39,7 +39,7 @@ const defineJob = async (job, jobs, agenda) => {
 			headers: request.header ? request.header : {},
 		}
 
-		await needle(request.method, request.url, options)
+		needle(request.method, request.url, options)
 			.then(function (response) {
 				addExicutionLog(jobDef, common.SUCCESS, { response: common.SUCCESS }, job.attrs.lastRunAt)
 				return 'good'
