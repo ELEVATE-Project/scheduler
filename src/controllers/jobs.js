@@ -16,11 +16,11 @@ const common = require('@constants/common')
 
 module.exports = class Jobs {
 	/**
-	 * @api {post} /scheduleJob
+	 * @api {post} /scheduler/scheduleJob
 	 * Define And Schedule Job
 	 * @apiVersion 1.0.0
 	 * @apiGroup jobs
-	 * @apiSampleRequest {base URL}/jobs/scheduleJob
+	 * @apiSampleRequest {base URL}/scheduler/jobs/scheduleJob
 	 * @apiUse successBody
 	 * @apiUse errorBody
 	 * @apiParamExample {json} Response:
@@ -41,23 +41,18 @@ module.exports = class Jobs {
 	async scheduleJob(req, res) {
 		try {
 			let newJob = await jobsHelper.createJobDefinition(req.body)
-			res.status(newJob.status).json(newJob)
+			res.send(newJob)
 		} catch (err) {
-			res.status(400).json(
-				common.failureResponse({
-					message: err,
-					status: httpResponse.BAD_REQUEST,
-				})
-			)
+			return err
 		}
 	}
 
 	/**
-	 * @api {get} /jobs/jobList
+	 * @api {get} /scheduler/jobs/jobList
 	 * Jobs List
 	 * @apiVersion 1.0.0
 	 * @apiGroup jobs
-	 * @apiSampleRequest {base URL}/jobs/jobList
+	 * @apiSampleRequest {base URL}/scheduler/jobs/jobList
 	 * @apiUse successBody
 	 * @apiUse errorBody
 	* @apiParamExample {json} Response:
@@ -86,32 +81,19 @@ module.exports = class Jobs {
 
 	async jobList(req, res) {
 		try {
-			const list = await jobsReady.then((jobs) => jobs.toArray())
-			res.status(200).json(
-				common.successResponse({
-					message: responseMessage.JOB_LIST_FETCH_SUCCESS,
-					status: httpResponse.OK,
-					result: {
-						data: list,
-					},
-				})
-			)
+			const jobList = await jobsHelper.listJobs()
+			res.send(jobList)
 		} catch (err) {
-			res.status(400).json(
-				common.failureResponse({
-					message: err,
-					status: httpResponse.BAD_REQUEST,
-				})
-			)
+			return err
 		}
 	}
 
 	/**
-	 * @api {post} /every
+	 * @api {post} /scheduler/every
 	 * Define And Schedule Job
 	 * @apiVersion 1.0.0
 	 * @apiGroup jobs
-	 * @apiSampleRequest {base URL}/jobs/every
+	 * @apiSampleRequest {base URL}/scheduler/jobs/every
 	 * @apiUse successBody
 	 * @apiUse errorBody
 	 * @apiParamExample {json} Response:
@@ -133,23 +115,18 @@ module.exports = class Jobs {
 		try {
 			//need to add request validation
 			const newInstance = await jobsHelper.createJobInstanceForEvery(req.body.name, req.body.interval)
-			res.status(newInstance.status).json(newInstance)
+			res.send(newInstance)
 		} catch (err) {
-			res.status(400).json(
-				common.failureResponse({
-					message: err,
-					status: httpResponse.BAD_REQUEST,
-				})
-			)
+			return err
 		}
 	}
 
 	/**
-	 * @api {post} /now
+	 * @api {post} /scheduler/now
 	 * Define And Schedule Job
 	 * @apiVersion 1.0.0
 	 * @apiGroup jobs
-	 * @apiSampleRequest {base URL}/jobs/now
+	 * @apiSampleRequest {base URL}/scheduler/jobs/now
 	 * @apiUse successBody
 	 * @apiUse errorBody
 	 * @apiParamExample {json} Response:
@@ -171,23 +148,18 @@ module.exports = class Jobs {
 		try {
 			//need to add request validation
 			const newInstance = await jobsHelper.createJobInstanceForNow(req.body.name)
-			res.status(newInstance.status).json(newInstance)
+			res.send(newInstance)
 		} catch (err) {
-			res.status(400).json(
-				common.failureResponse({
-					message: err,
-					status: httpResponse.BAD_REQUEST,
-				})
-			)
+			return err
 		}
 	}
 
 	/**
-	 * @api {post} /once
+	 * @api {post} /scheduler/once
 	 * Define And Schedule Job
 	 * @apiVersion 1.0.0
 	 * @apiGroup jobs
-	 * @apiSampleRequest {base URL}/jobs/once
+	 * @apiSampleRequest {base URL}/scheduler/jobs/once
 	 * @apiUse successBody
 	 * @apiUse errorBody
 	* @apiParamExample {json} Response:
@@ -209,30 +181,26 @@ module.exports = class Jobs {
 		try {
 			//need to add request validation
 			const newInstance = await jobsHelper.createJobInstanceForOnce(req.body.name, req.body.interval)
-			res.status(newInstance.status).json(newInstance)
+			res.send(newInstance)
 		} catch (err) {
-			res.status(400).json(
-				common.failureResponse({
-					message: err,
-					status: httpResponse.BAD_REQUEST,
-				})
-			)
+			return err
 		}
 	}
 
 	/**
-	 * @api {post} /cancel
+	 * @api {post} /scheduler/cancel
 	 * cancel all instances in DB running on a job.
 	 * @apiVersion 1.0.0
 	 * @apiGroup jobs
-	 * @apiSampleRequest {base URL}/jobs/cancel
+	 * @apiSampleRequest {base URL}/scheduler/jobs/cancel
 	 * @apiUse successBody
 	 * @apiUse errorBody
 	* @apiParamExample {json} Response:
 	*   {
 			"message": "1- job instance cancelled",
 			"success": true,
-			"status": "200"
+			"status": 200,
+			"result": {}
 		}
 	*/
 
@@ -245,49 +213,27 @@ module.exports = class Jobs {
 
 	async cancel(req, res) {
 		try {
-			//add validation for job name
-			const cancelInstance = await agenda.cancel({ name: req.body.name })
-			if (cancelInstance > 0) {
-				res.status(200).json(
-					common.successResponse({
-						message: cancelInstance + responseMessage.JOB_INSTANCE_CANCELLED,
-						success: true,
-						status: httpResponse.OK,
-					})
-				)
-			} else {
-				res.status(400).json(
-					common.failureResponse({
-						message: responseMessage.INSTANCE_NOT_PRESENT,
-						success: false,
-						status: httpResponse.BAD_REQUEST,
-					})
-				)
-			}
+			const cancelJob = await jobsHelper.cancelJobs(req.body.name)
+			res.send(cancelJob)
 		} catch (err) {
-			res.status(400).json(
-				common.failureResponse({
-					message: err,
-					success: false,
-					status: httpResponse.BAD_REQUEST,
-				})
-			)
+			return err
 		}
 	}
 
 	/**
-	 * @api {delete} /jobs/:jobName
+	 * @api {delete} /scheduler/jobs/deleteJob
 	 * delete job data.
 	 * @apiVersion 1.0.0
 	 * @apiGroup jobs
-	 * @apiSampleRequest {base URL}/jobs/:sessionName
+	 * @apiSampleRequest {base URL}/scheduler/jobs/deleteJob
 	 * @apiUse successBody
 	 * @apiUse errorBody
 	* @apiParamExample {json} Response:
 	*   {
 			"message": "Successfully deleted job data",
 			"success": true,
-			"status": "200"
+			"status": 200,
+			"result": {}
 		}
 	*/
 
@@ -301,56 +247,27 @@ module.exports = class Jobs {
 	async deleteJob(req, res) {
 		try {
 			//add validation for param job name
-			if (req.body.jobname != '') {
-				const job = {
-					name: req.body.jobname,
-				}
-				const jobs = await jobsReady
-				const jobExist = await utils.checkForDuplicateJobDefinition(job, jobs)
-				if (jobExist > 0) {
-					await agenda.cancel({ name: job.name })
-					await jobs.deleteOne({ name: job.name })
-					res.status(200).json(
-						common.successResponse({
-							message: responseMessage.JOB_DELETED,
-							success: true,
-							status: httpResponse.OK,
-						})
-					)
-				} else {
-					res.status(400).json(
-						common.failureResponse({
-							message: responseMessage.JOB_NOT_FOUND,
-							success: false,
-							status: httpResponse.BAD_REQUEST,
-						})
-					)
-				}
-			}
+			const deleteJob = await jobsHelper.deleteJobs(req.body.jobname)
+			res.send(deleteJob)
 		} catch (err) {
-			res.status(400).json(
-				common.failureResponse({
-					message: err,
-					success: false,
-					status: httpResponse.BAD_REQUEST,
-				})
-			)
+			return err
 		}
 	}
 
 	/**
-	 * @api {put} /jobs/:jobName
+	 * @api {put} /scheduler/jobs/:jobName
 	 * update job data.
 	 * @apiVersion 1.0.0
 	 * @apiGroup jobs
-	 * @apiSampleRequest {base URL}/jobs/:sessionName
+	 * @apiSampleRequest {base URL}/scheduler/jobs/:sessionName
 	 * @apiUse successBody
 	 * @apiUse errorBody
 	* @apiParamExample {json} Response:
 	*   {
 			"message": "Successfully updated job",
 			"success": true,
-			"status": "200"
+			"status": 200,
+			"result": {}
 		}
 	*/
 
@@ -363,37 +280,10 @@ module.exports = class Jobs {
 
 	async updateJob(req, res) {
 		try {
-			//add param validation
-			const job = req.body || {}
-			job.name = req.body.name
-			const jobs = await jobsReady
-			const jobExist = await utils.checkForDuplicateJobDefinition(job, jobs)
-			if (jobExist > 0) {
-				await defineJob(job, jobs, agenda)
-				res.status(200).json(
-					common.successResponse({
-						message: responseMessage.JOB_UPDATED,
-						success: true,
-						status: httpResponse.OK,
-					})
-				)
-			} else {
-				res.status(400).json(
-					common.failureResponse({
-						message: responseMessage.JOB_NOT_FOUND,
-						success: false,
-						status: httpResponse.BAD_REQUEST,
-					})
-				)
-			}
+			const updateJob = await jobsHelper.updateJobs(req)
+			res.send(updateJob)
 		} catch (err) {
-			res.status(400).json(
-				common.failureResponse({
-					message: err,
-					success: false,
-					status: httpResponse.BAD_REQUEST,
-				})
-			)
+			return err
 		}
 	}
 }

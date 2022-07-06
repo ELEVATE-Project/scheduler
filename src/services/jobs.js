@@ -98,7 +98,7 @@ const createJobInstanceForOnce = async (jobName, scheduleTime) => {
 		}
 	} catch (err) {
 		return common.failureResponse({
-			message: err,
+			message: err.message,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
 		})
@@ -181,9 +181,153 @@ const createJobInstanceForNow = async (jobName) => {
 	}
 }
 
+/**
+ * cancel job instances
+ * @method
+ * @name cancelJobs
+ * @param {Object} jobTitle -name of job.
+ * @returns {JSON} - returns job cancel details.
+ */
+
+const cancelJobs = async (jobTitle) => {
+	try {
+		//add validation for job name
+		const cancelInstance = await agenda.cancel({ name: jobTitle })
+		if (cancelInstance > 0) {
+			return common.successResponse({
+				message: cancelInstance + responseMessage.JOB_INSTANCE_CANCELLED,
+				success: true,
+				status: httpResponse.OK,
+			})
+		} else {
+			return common.failureResponse({
+				message: responseMessage.INSTANCE_NOT_PRESENT,
+				success: false,
+				status: httpResponse.BAD_REQUEST,
+			})
+		}
+	} catch (err) {
+		return common.failureResponse({
+			message: err.message,
+			success: false,
+			status: httpResponse.BAD_REQUEST,
+		})
+	}
+}
+
+/**
+ * delete job instances and definitions
+ * @method
+ * @name deleteJobs
+ * @param {Object} jobTitle -name of job.
+ * @returns {JSON} - returns job delete details.
+ */
+
+const deleteJobs = async (jobTitle = '') => {
+	try {
+		//add validation for param job name
+		if (jobTitle != '') {
+			const job = {
+				name: jobTitle,
+			}
+			const jobs = await jobsReady
+			const jobExist = await utils.checkForDuplicateJobDefinition(job, jobs)
+			if (jobExist > 0) {
+				await agenda.cancel({ name: job.name })
+				await jobs.deleteOne({ name: job.name })
+				return common.successResponse({
+					message: responseMessage.JOB_DELETED,
+					success: true,
+					status: httpResponse.OK,
+				})
+			} else {
+				return common.failureResponse({
+					message: responseMessage.JOB_NOT_FOUND,
+					success: false,
+					status: httpResponse.BAD_REQUEST,
+				})
+			}
+		}
+	} catch (err) {
+		return common.failureResponse({
+			message: err.message,
+			success: false,
+			status: httpResponse.BAD_REQUEST,
+		})
+	}
+}
+
+/**
+ * update job definitions
+ * @method
+ * @name updateJobs
+ * @param {Object} jobData -job data.
+ * @returns {JSON} - returns job updation details.
+ */
+
+const updateJobs = async (jobData) => {
+	try {
+		//add param validation
+		const job = jobData.body || {}
+		job.name = jobData.body.name
+		const jobs = await jobsReady
+		const jobExist = await utils.checkForDuplicateJobDefinition(job, jobs)
+		if (jobExist > 0) {
+			await defineJob(job, jobs, agenda)
+			return common.successResponse({
+				message: responseMessage.JOB_UPDATED,
+				success: true,
+				status: httpResponse.OK,
+			})
+		} else {
+			return common.failureResponse({
+				message: responseMessage.JOB_NOT_FOUND,
+				success: false,
+				status: httpResponse.BAD_REQUEST,
+			})
+		}
+	} catch (err) {
+		return common.failureResponse({
+			message: err.message,
+			success: false,
+			status: httpResponse.BAD_REQUEST,
+		})
+	}
+}
+
+/**
+ * list job definitions
+ * @method
+ * @name listJobs
+ * @returns {JSON} - list of job definition.
+ */
+
+const listJobs = async () => {
+	try {
+		const list = await jobsReady.then((jobs) => jobs.toArray())
+		return common.successResponse({
+			message: responseMessage.JOB_LIST_FETCH_SUCCESS,
+			status: httpResponse.OK,
+			result: {
+				data: list,
+			},
+		})
+	} catch (err) {
+		return common.failureResponse({
+			message: err.message,
+			success: false,
+			status: httpResponse.BAD_REQUEST,
+		})
+	}
+}
+
 module.exports = {
 	createJobDefinition,
 	createJobInstanceForOnce,
 	createJobInstanceForEvery,
 	createJobInstanceForNow,
+	cancelJobs,
+	deleteJobs,
+	updateJobs,
+	listJobs,
 }
