@@ -49,19 +49,20 @@ module.exports = (app) => {
 
 		if (
 			controllerResponse &&
-			controllerResponse.statusCode !== 200 &&
-			controllerResponse.statusCode !== 201 &&
-			controllerResponse.statusCode !== 202
+			controllerResponse.status !== 200 &&
+			controllerResponse.status !== 201 &&
+			controllerResponse.status !== 202
 		) {
 			/* If error obtained then global error handler gets executed */
 			return next(controllerResponse)
 		}
+
 		if (controllerResponse) {
-			res.status(controllerResponse.statusCode).json({
-				responseCode: controllerResponse.responseCode,
+			res.status(controllerResponse.status).json({
+				success: controllerResponse.success,
+				responseCode: controllerResponse.status,
 				message: controllerResponse.message,
 				result: controllerResponse.result,
-				meta: controllerResponse.meta,
 			})
 		}
 	}
@@ -79,8 +80,8 @@ module.exports = (app) => {
 
 	// Global error handling middleware, should be present in last in the stack of a middleware's
 	app.use((error, req, res, next) => {
-		const status = error.statusCode || 500
-		const responseCode = error.responseCode || 'SERVER_ERROR'
+		const status = error.status || 500
+		const success = error.success == false ? error.success : 'SERVER_ERROR'
 		const message = error.message || ''
 		let errorData = []
 
@@ -88,7 +89,7 @@ module.exports = (app) => {
 			errorData = error.data
 		}
 		res.status(status).json({
-			responseCode,
+			success,
 			message,
 			error: errorData,
 		})

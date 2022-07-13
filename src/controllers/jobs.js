@@ -41,7 +41,7 @@ module.exports = class Jobs {
 	async scheduleJob(req, res) {
 		try {
 			let newJob = await jobsHelper.createJobDefinition(req.body)
-			res.send(newJob)
+			return newJob
 		} catch (err) {
 			return err
 		}
@@ -82,7 +82,7 @@ module.exports = class Jobs {
 	async jobList(req, res) {
 		try {
 			const jobList = await jobsHelper.listJobs()
-			res.send(jobList)
+			return jobList
 		} catch (err) {
 			return err
 		}
@@ -115,7 +115,7 @@ module.exports = class Jobs {
 		try {
 			//need to add request validation
 			const newInstance = await jobsHelper.createJobInstanceForEvery(req.body.name, req.body.interval)
-			res.send(newInstance)
+			return newInstance
 		} catch (err) {
 			return err
 		}
@@ -148,7 +148,7 @@ module.exports = class Jobs {
 		try {
 			//need to add request validation
 			const newInstance = await jobsHelper.createJobInstanceForNow(req.body.name)
-			res.send(newInstance)
+			return newInstance
 		} catch (err) {
 			return err
 		}
@@ -181,7 +181,7 @@ module.exports = class Jobs {
 		try {
 			//need to add request validation
 			const newInstance = await jobsHelper.createJobInstanceForOnce(req.body.name, req.body.interval)
-			res.send(newInstance)
+			return newInstance
 		} catch (err) {
 			return err
 		}
@@ -214,7 +214,7 @@ module.exports = class Jobs {
 	async cancel(req, res) {
 		try {
 			const cancelJob = await jobsHelper.cancelJobs(req.body.name)
-			res.send(cancelJob)
+			return cancelJob
 		} catch (err) {
 			return err
 		}
@@ -248,7 +248,7 @@ module.exports = class Jobs {
 		try {
 			//add validation for param job name
 			const deleteJob = await jobsHelper.deleteJobs(req.body.jobname)
-			res.send(deleteJob)
+			return deleteJob
 		} catch (err) {
 			return err
 		}
@@ -281,7 +281,7 @@ module.exports = class Jobs {
 	async updateJob(req, res) {
 		try {
 			const updateJob = await jobsHelper.updateJobs(req)
-			res.send(updateJob)
+			return updateJob
 		} catch (err) {
 			return err
 		}
