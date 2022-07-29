@@ -1,18 +1,25 @@
-const mongoose = require('mongoose');
+/**
+ * name : configs/mongodb
+ * author : vishnu
+ * Date : 22-june-2022
+ * Description : Mongodb connections configurations
+ */
 
-const dbConnection = mongoose.createConnection(
-    process.env.MONGODB_URL,
-    {
-    useNewUrlParser: true
-    }
-);
+//Dependencies
+const mongoose = require('mongoose')
 
-dbConnection.on("error", function () {
-    console.log("Database connection error:")
-});
+module.exports = function () {
+	// Added to remove depreciation warnings from logs.
+	const db = mongoose.createConnection(process.env.MONGODB_URL, {
+		useNewUrlParser: true,
+	})
 
-dbConnection.once("open", function () {
-    console.log("Connected to DB");
-});
+	db.on('error', function () {
+		console.log('Database connection error:')
+	})
 
-module.exports = dbConnection;
+	db.once('open', function () {
+		console.log('Connected to DB')
+	})
+	global.db = db
+}

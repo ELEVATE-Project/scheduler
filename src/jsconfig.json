@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es6",
+		"baseUrl": "./",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"paths": {
+			"@configs*": ["./configs*"],
+			"@controllers*": ["./controllers*"],
+			"@generics*": ["./generics*"],
+			"@constants*": ["./constants*"],
+			"@models": ["./models*"],
+			"@routes*": ["./routes*"],
+			"@services*": ["./services*"],
+			"@validators*": ["./validators*"],
+			"@middlewares*": ["./middlewares*"]
+		}
+	},
+	"exclude": ["node_modules"]
+}
