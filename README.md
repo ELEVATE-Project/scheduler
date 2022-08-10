@@ -1,149 +1,167 @@
-# Scheduler Service Setup Guide
+# Scheduler Service
 
-Recommend to,
-Install any IDE in your system(eg: VScode etc..)
-Install nodejs from : https://nodejs.org/en/download/
-Install mongoDB: https://docs.mongodb.com/manual/installation/
-Install Robo 3T: ​​https://robomongo.org/
+Elevate scheduler services can be setup in local using two methods:
 
-## 1. Cloning the scheduler repository into your system
+A. Dockerized service with local dependencies(Intermediate): Refer **Section A**.
 
-Goto https://github.com/ELEVATE-Project/scheduler From the code tab copy the link. Using that link clone the repository into your local machine.
+B. Local Service with local dependencies(Hardest): Refer **Section B**.
 
-Let's make it more easy for you:
+## A. Dockerized Service With Local Dependencies
 
-    1. Create a new folder where you want to clone the repository.
-    2. Goto that directory through the terminal and execute the commands.
+**Expectation**: Run single docker containerized service with existing local (in host) or remote dependencies.
 
-git clone https://github.com/ELEVATE-Project/scheduler.git
+### Local Dependencies Steps
 
-## 2. Add .env file to the project directory
+1. Update dependency (Mongo, Kafka etc) IP addresses in .env with "**host.docker.internal**".
 
-    create  a file named as .env in src directory of the project and copy below code into that file.
-    Add fallowing enviorment configs
+    Eg:
 
-## 3. Run mongodb locally
+    ```
+     #MongoDb Connectivity Url
+     MONGODB_URL = mongodb://host.docker.internal:27017/elevate-scheduler
 
-spacify the mongo port and ip in .env
-application takes the db as specified in the .env
+     #Kafka Host Server URL
+     KAFKA_URL = host.docker.external:9092
+    ```
 
-### Required Environment variables:
+2. Find **host.docker.internal** IP address and added it to **mongod.conf** file in host.
 
-````
-```
-# Kafka hosted server url
-KAFKA_URL = localhost:9092
+    Eg: If **host.docker.internal** is **172.17.0.1**,
+    **mongod.conf:**
 
-# Kafka topic to push notification data
-NOTIFICATION_KAFKA_TOPIC = 'notificationtopic'
+    ```
+    # network interfaces
+    net:
+        port: 27017
+        bindIp: "127.0.0.1,172.17.0.1"
+    ```
 
-# MONGODB_URL
-MONGODB_URL = mongodb://localhost:27017/db_name
+    Note: Steps to find **host.docker.internal** IP address & location of **mongod.conf** is operating system specific. Refer [this](https://stackoverflow.com/questions/22944631/how-to-get-the-ip-address-of-the-docker-host-from-inside-a-docker-container) for more information.
 
-# App running port
-APPLICATION_PORT = 4000
+3. Build the docker image.
+    ```
+    /ELEVATE/scheduler$ docker build -t elevate/scheduler:1.0 .
+    ```
+4. Run the docker container.
 
-```
-````
+    - For Mac & Windows with docker v18.03+:
 
-## 4. Install Npm
+        ```
+        $ docker run --name user elevate/scheduler:1.0
+        ```
 
-    From src directory execute :
+    - For Linux:
+        ```
+        $ docker run --name user --add-host=host.docker.internal:host-gateway elevate/scheduler:1.0`
+        ```
+        Refer [this](https://stackoverflow.com/a/24326540) for more information.
 
-    npm i
+### Remote Dependencies Steps
 
-    To install the dependencies in your local machine.
+1. Update dependency (Mongo, Kafka etc) Ip addresses in .env with respective remote server IPs.
 
-## 5. To Run server
+    Eg:
 
-    npm start
+    ```
+     #MongoDb Connectivity Url
+     MONGODB_URL = mongodb://10.1.2.34:27017/elevate-scheduler
 
-# What is scheduler service ?
+     #Kafka Host Server URL
+     KAFKA_URL = 11.2.3.45:9092
+    ```
 
-Service to schedule jobs, Based on Agenda npm package.
-Provide your job REST endpoint and it’s scheduling is offered as a service. Introduce a job url, name it, give contact name and email id of person related to the job. scheduler will schedule the job for you on specified time and if any error occurs details will be shared to the specified email id.
+2. Add Bind IP to **mongod.conf** in host:
 
-## API Documentation
+    Follow instructions given [here.](https://www.digitalocean.com/community/tutorials/how-to-configure-remote-access-for-mongodb-on-ubuntu-20-04)
 
-## GET:/scheduler/jobs/jobList
+    Note: Instructions might differ based on MongoDB version and operating system.
 
-List all job definitions from the database.
+3. Build the docker image.
+    ```
+    /ELEVATE/scheduler$ docker build -t elevate/scheduler:1.0 .
+    ```
+4. Run the docker container.
 
-## POST:/scheduler/jobs/scheduleJob
+    ```
+    $ docker run --name scheduler elevate/scheduler:1.0
+    ```
 
-Add new job definitions. And schedule it.
+## B. Local Service With Local Dependencies
 
-Data required:
+**Expectation**: Run single service with existing local dependencies in host (**Non-Docker Implementation**).
 
-```javascript
-{
-	name : //Name for job,
-	email : [] ////error reporting mail id/ids,
-    request : {
-        url : //Job url for post || get || put || delete etc.,
-        method : //post,get,put,delete,
-        header : {} //header data - optional
-    },
-    schedule : {
-         scheduleType : //every,once and now,
-        interval : //time - optional ( not required for type now )
-    }
-}
-```
+### Steps
 
-## POST:/scheduler/jobs/now
+1. Install required tools & dependencies
 
-Schedule a defined job for immediate call(now).
+    Install any IDE (eg: VScode)
 
-Data required:
+    Install Nodejs: https://nodejs.org/en/download/
 
-```javascript
-{
-	name //Name of the job to create instance which is already present in job definition.
-}
-```
+    Install MongoDB: https://docs.mongodb.com/manual/installation/
 
-## POST:/scheduler/jobs/every
+    Install Robo-3T: ​​ https://robomongo.org/
 
-Schedule job for specified intervals, for repeat calls.
+2. Clone the **Scheduler service** repository.
 
-## POST:/scheduler/jobs/once
+    ```
+    git clone https://github.com/ELEVATE-Project/scheduler.git
+    ```
 
-Schedule job for a specified time.
+3. Add **.env** file to the project directory
 
-Data required:
+    Create a **.env** file in **src** directory of the project and copy these environment variables into it.
 
-```javascript
-{
-	name, 	//Name of the job to create instance which is already present in job definition.
-	interval,	//When to shedule the job
-}
-```
+    ```
+    #Scheduler Service Config
 
-## POST:/scheduler/jobs/cancel
+    #Application Base url
+    APPLICATION_BASE_URL = /scheduler/
 
-Cancels job/jobs on specified name (does not remove definitions created by -POST api/jobs)
+    # Kafka hosted server url
+    KAFKA_URL = localhost:9092
 
-Data:
+    # Kafka topic to push notification data
+    NOTIFICATION_KAFKA_TOPIC = 'notificationtopic'
 
-```javascript
-{
-	name //name of the job
-}
-```
+    # MONGODB_URL
+    MONGODB_URL = mongodb://localhost:27017/tl-cron-rest
 
-## PUT:scheduler/jobs/updateJob
+    # App running port
+    APPLICATION_PORT = 4000
 
-Update job definition.
+    # Api doc url
+    API_DOC_URL = '/api-doc'
+    ```
 
-## DELETE:scheduler/jobs/deleteJob
+4. Start MongoDB locally
 
-Data:
+    Based on your host operating system and method used, start MongoDB.
 
-```javascript
-{
-	name //name of the job
-}
-```
+5. Install Npm packages
 
-Delete specified job’s definition and instances.
+    ```
+    ELEVATE/scheduler/src$ npm install
+    ```
+
+6. Start Scheduler server
+
+    ```
+    ELEVATE/scheduler/src$ npm start
+    ```
+
+## API Documentation link
+
+https://elevate-apis.shikshalokam.org/scheduler/api-doc
+
+## Mentoring Services
+
+https://github.com/ELEVATE-Project/mentoring.git
+
+## User Services
+
+https://github.com/ELEVATE-Project/user.git
+
+## Notification Services
+
+https://github.com/ELEVATE-Project/notification.git

@@ -16,6 +16,11 @@ const PORT = process.env.APPLICATION_PORT
 app.use(bodyParser.json({ limit: '50MB' }))
 app.use(bodyParser.urlencoded({ limit: '50MB', extended: false }))
 
+/*api-doc  */
+app.get(process.env.API_DOC_URL, function (req, res) {
+	res.sendFile(path.join(__dirname, './api-doc/index.html'))
+})
+
 /* Registered routes here */
 require('./routes')(app)
 

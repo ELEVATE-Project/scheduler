@@ -1,0 +1,532 @@
+---
+openapi: 3.0.0
+info:
+  title: Elevate Scheduler
+  version: 1.0.0
+  description: >-
+    - Service to schedule jobs, Based on Agenda npm package. Provide your job REST endpoint and its scheduling is offered as a service. Introduce a job url, name it, give contact name and email id of person related to the job. scheduler will schedule the job for you on specified time and if any error occurs details will be shared to the specified email id.
+
+  contact:
+    email: tech-infra@shikshalokam.org
+servers:
+  - url: http://localhost:4000
+    description: local server
+  - url: https://dev.elevate-apis.shikshalokam.org
+    description: dev server
+paths:
+  'scheduler/jobs/jobList':
+    get:
+      summary: List scheduled job details
+      tags:
+        - Job APIs
+      description: "Get list of scheduled jobs.  \n -
+        The API Endpoint for listing scheduled jobs is `scheduler/jobs/jobList` \n - It is mandatory to
+        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
+        and cannot be empty or null."
+      responses:
+        '200':
+          description: ok
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/jobList200Response'
+        '400':
+          description: Bad Request
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/jobList400Response'
+  'scheduler/jobs/scheduleJob':
+    post:
+      summary: Create job
+      tags:
+        - Job APIs
+      description: "Add new job definition. And schedule it.  \n -
+        The API Endpoint for creating a definition is `scheduler/jobs/scheduleJob` \n - It is mandatory to
+        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
+        and cannot be empty or null."
+      requestBody:
+        required: true
+        content:
+          application.json:
+            schema:
+              '$ref': '#/components/schemas/jobs/createJobRequest'
+      responses:
+        '200':
+          description: ok
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/createJob200Response'
+        '400':
+          description: Bad Request
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/createJob400Response'
+  'scheduler/jobs/now':
+    post:
+      summary: Schedule job for immediate exicution
+      tags:
+        - Job APIs
+      description: "Schedule immediate job.  \n -
+        The API Endpoint for scheduling immediate job is `scheduler/jobs/now` \n - It is mandatory to
+        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
+        and cannot be empty or null."
+      requestBody:
+        required: true
+        content:
+          application.json:
+            schema:
+              '$ref': '#/components/schemas/jobs/jobNowRequest'
+      responses:
+        '200':
+          description: ok
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/createJob200Response'
+        '400':
+          description: Bad Request
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/createJob400Response'
+  'scheduler/jobs/every':
+    post:
+      summary: Schedule job for repeatative intervals
+      tags:
+        - Job APIs
+      description: "Schedule repeatative job.  \n -
+        The API Endpoint for scheduling repeatative job is `scheduler/jobs/every` \n - It is mandatory to
+        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
+        and cannot be empty or null."
+      requestBody:
+        required: true
+        content:
+          application.json:
+            schema:
+              '$ref': '#/components/schemas/jobs/jobOnceAndEveryRequest'
+      responses:
+        '200':
+          description: ok
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/createJob200Response'
+        '400':
+          description: Bad Request
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/createJob400Response'
+  'scheduler/jobs/once':
+    post:
+      summary: Schedule job to exicute on specified time at once
+      tags:
+        - Job APIs
+      description: "Schedule one time job.  \n -
+        The API Endpoint for scheduling one time job is `scheduler/jobs/once` \n - It is mandatory to
+        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
+        and cannot be empty or null."
+      requestBody:
+        required: true
+        content:
+          application.json:
+            schema:
+              '$ref': '#/components/schemas/jobs/jobOnceAndEveryRequest'
+      responses:
+        '200':
+          description: ok
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/createJob200Response'
+        '400':
+          description: Bad Request
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/createJob400Response'
+  'scheduler/jobs/cancel':
+    post:
+      summary: Cancel specified job instance
+      tags:
+        - Job APIs
+      description: "Cancel job instance.  \n -
+        The API Endpoint for cancel a job instance is `scheduler/jobs/cancel` \n - It is mandatory to
+        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
+        and cannot be empty or null."
+      requestBody:
+        required: true
+        content:
+          application.json:
+            schema:
+              '$ref': '#/components/schemas/jobs/cancelRequest'
+      responses:
+        '200':
+          description: ok
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/cancelJob200Response'
+        '400':
+          description: Bad Request
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/cancelJob400Response'
+  'scheduler/jobs/updateJob':
+    put:
+      summary: Update specified job definition
+      tags:
+        - Job APIs
+      description: "Update job definition.  \n -
+        The API Endpoint for update a job defenition is `scheduler/jobs/updateJob` \n - It is mandatory to
+        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
+        and cannot be empty or null."
+      requestBody:
+        required: true
+        content:
+          application.json:
+            schema:
+              '$ref': '#/components/schemas/jobs/updateJobRequest'
+      responses:
+        '200':
+          description: ok
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/updateJob200Response'
+        '400':
+          description: Bad Request
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/updateJob400Response'
+  'scheduler/jobs/deleteJob':
+    delete:
+      summary: Delete specified job definition and it's instances
+      tags:
+        - Job APIs
+      description: "Update job definition.  \n -
+        The API Endpoint for delete specified job definition and it's instances is `scheduler/jobs/deleteJob` \n - It is mandatory to
+        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
+        and cannot be empty or null."
+      requestBody:
+        required: true
+        content:
+          application.json:
+            schema:
+              '$ref': '#/components/schemas/jobs/deleteRequest'
+      responses:
+        '200':
+          description: ok
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/deleteJob200Response'
+        '400':
+          description: Bad Request
+          content:
+            application.json:
+              schema:
+                '$ref': '#/components/schemas/jobs/deleteJob400Response'
+
+components:
+  schemas:
+    jobs:
+      createJobRequest:
+        type: object
+        required:
+          - name
+          - email
+          - request
+          - schedule
+        properties:
+          name:
+            type: string
+            example: jobname
+          email:
+            type: array
+            items:
+              type: string
+              example: schedulersupport@gmail.com
+          request:
+            type: object
+            properties:
+              url:
+                type: string
+                example: http://localhost:3000/mentoring/v1/notifications/cronJobBeforeOneHour
+              method:
+                type: string
+                example: get
+              header:
+                type: object
+                properties:
+                  internal_access_token:
+                    type: string
+                    example: asdgbsd891237bzus81923ziu3y1283ziu318237a
+          schedule:
+            type: object
+            properties:
+              scheduleType:
+                type: string
+                example: once
+              interval:
+                type: string
+                example: 1 minute
+
+      createJob200Response:
+        description: Created
+        type: object
+        properties:
+          success:
+            type: boolean
+            example: true
+          responseCode:
+            type: number
+            example: 200
+          message:
+            type: string
+            example: Successfully scheduled job at given time.
+          result:
+            type: object
+
+      createJob400Response:
+        description: Bad Request.
+        type: object
+        properties:
+          success:
+            type: string
+            example: CLIENT_ERROR
+          message:
+            type: string
+            example: Failed to schedule the job
+          error:
+            type: array
+            items:
+              type: object
+      jobNowRequest:
+        type: object
+        required:
+          - name
+        properties:
+          name:
+            type: string
+            example: emailCronJob
+      jobOnceAndEveryRequest:
+        type: object
+        required:
+          - name
+          - interval
+        properties:
+          name:
+            type: string
+            example: emailCronJob
+          interval:
+            type: string
+            example: five minute
+      jobList200Response:
+        description: Created
+        type: object
+        properties:
+          success:
+            type: boolean
+            example: true
+          responseCode:
+            type: number
+            example: 200
+          message:
+            type: string
+            example: Sucessfully fetched job list
+          result:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: 62c2d57cd3e20f34a110056c
+                    name:
+                      type: string
+                      example: jobname
+                    email:
+                      type: array
+                      items:
+                        type: string
+                        example: schedulersupport@gmail.com
+                    request:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                          example: http://localhost:3000/mentoring/v1/notifications/cronJobBeforeOneHour
+                        method:
+                          type: string
+                          example: get
+                        header:
+                          type: object
+                          properties:
+                            internal_access_token:
+                              type: string
+                              example: asdgbsd891237bzus81923ziu3y1283ziu318237a
+      jobList400Response:
+        description: Bad Request.
+        type: object
+        properties:
+          success:
+            type: string
+            example: CLIENT_ERROR
+          message:
+            type: string
+            example: Job list fetching failed
+          error:
+            type: array
+            items:
+              type: object
+      cancelRequest:
+        type: object
+        required:
+          - name
+        properties:
+          name:
+            type: string
+            example: emailCronJob
+      cancelJob200Response:
+        description: Created
+        type: object
+        properties:
+          success:
+            type: boolean
+            example: true
+          responseCode:
+            type: number
+            example: 200
+          message:
+            type: string
+            example: 4- job instance cancelled
+          result:
+            type: object
+
+      cancelJob400Response:
+        description: Bad Request.
+        type: object
+        properties:
+          success:
+            type: string
+            example: CLIENT_ERROR
+          message:
+            type: string
+            example: No job instance exist in specified job name
+          error:
+            type: array
+            items:
+              type: object
+      updateJobRequest:
+        type: object
+        required:
+          - name
+          - email
+          - request
+        properties:
+          name:
+            type: string
+            example: jobname
+          email:
+            type: array
+            items:
+              type: string
+              example: schedulersupport@gmail.com
+          request:
+            type: object
+            properties:
+              url:
+                type: string
+                example: http://localhost:3000/mentoring/v1/notifications/cronJobBeforeOneHour
+              method:
+                type: string
+                example: get
+              header:
+                type: object
+                properties:
+                  internal_access_token:
+                    type: string
+                    example: asdgbsd891237bzus81923ziu3y1283ziu318237a
+      updateJob200Response:
+        description: Created
+        type: object
+        properties:
+          success:
+            type: boolean
+            example: true
+          responseCode:
+            type: number
+            example: 200
+          message:
+            type: string
+            example: Successfully updated job
+          result:
+            type: object
+
+      updateJob400Response:
+        description: Bad Request.
+        type: object
+        properties:
+          success:
+            type: string
+            example: CLIENT_ERROR
+          message:
+            type: string
+            example: Job not found
+          error:
+            type: array
+            items:
+              type: object
+      deleteRequest:
+        type: object
+        required:
+          - name
+        properties:
+          name:
+            type: string
+            example: emailCronJob
+      deleteJob200Response:
+        description: Created
+        type: object
+        properties:
+          success:
+            type: boolean
+            example: true
+          responseCode:
+            type: number
+            example: 200
+          message:
+            type: string
+            example: Successfully deleted job data
+          result:
+            type: object
+
+      deleteJob400Response:
+        description: Bad Request.
+        type: object
+        properties:
+          success:
+            type: string
+            example: CLIENT_ERROR
+          message:
+            type: string
+            example: Job not found
+          error:
+            type: array
+            items:
+              type: object
+
+  securitySchemes:
+    bearer:
+      type: apiKey
+      name: X-auth-token
+      in: header
