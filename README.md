@@ -152,7 +152,7 @@ B. Local Service with local dependencies(Hardest): Refer **Section B**.
 
 ## API Documentation link
 
-https://dev.elevate-apis.shikshalokam.org/scheduler/api-doc
+https://elevate-apis.shikshalokam.org/scheduler/api-doc
 
 ## Mentoring Services
 
@@ -165,6 +165,3 @@ https://github.com/ELEVATE-Project/user.git
 ## Notification Services
 
 https://github.com/ELEVATE-Project/notification.git
-
-
-
