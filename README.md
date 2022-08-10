@@ -141,13 +141,13 @@ B. Local Service with local dependencies(Hardest): Refer **Section B**.
 5. Install Npm packages
 
     ```
-    ELEVATE/user/src$ npm install
+    ELEVATE/scheduler/src$ npm install
     ```
 
-6. Start User server
+6. Start Scheduler server
 
     ```
-    ELEVATE/user/src$ npm start
+    ELEVATE/scheduler/src$ npm start
     ```
 
 ## API Documentation link
