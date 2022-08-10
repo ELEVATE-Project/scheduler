@@ -102,7 +102,7 @@ B. Local Service with local dependencies(Hardest): Refer **Section B**.
 
     Install Robo-3T: ​​ https://robomongo.org/
 
-2. Clone the **User service** repository.
+2. Clone the **Scheduler service** repository.
 
     ```
     git clone https://github.com/ELEVATE-Project/scheduler.git
@@ -158,7 +158,7 @@ https://dev.elevate-apis.shikshalokam.org/scheduler/api-doc
 
 https://github.com/ELEVATE-Project/mentoring.git
 
-## user Services
+## User Services
 
 https://github.com/ELEVATE-Project/user.git
 
