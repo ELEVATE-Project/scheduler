@@ -16,11 +16,11 @@ const common = require('@constants/common')
 
 module.exports = class Jobs {
 	/**
-	 * @api {post} /scheduler/scheduleJob
+	 * @api {post} /scheduler/create
 	 * Define And Schedule Job
 	 * @apiVersion 1.0.0
 	 * @apiGroup jobs
-	 * @apiSampleRequest {base URL}/scheduler/jobs/scheduleJob
+	 * @apiSampleRequest {base URL}/scheduler/jobs/create
 	 * @apiUse successBody
 	 * @apiUse errorBody
 	 * @apiParamExample {json} Response:
@@ -34,11 +34,11 @@ module.exports = class Jobs {
 	/**
 	 * Define and schedule job
 	 * @method
-	 * @name scheduleJob
+	 * @name create
 	 * @returns {JSON} schedule status message.
 	 */
 	//make it create
-	async scheduleJob(req, res) {
+	async create(req, res) {
 		try {
 			let newJob = await jobsHelper.createJobDefinition(req.body)
 			return newJob
@@ -48,11 +48,11 @@ module.exports = class Jobs {
 	}
 
 	/**
-	 * @api {get} /scheduler/jobs/jobList
+	 * @api {get} /scheduler/jobs/list
 	 * Jobs List
 	 * @apiVersion 1.0.0
 	 * @apiGroup jobs
-	 * @apiSampleRequest {base URL}/scheduler/jobs/jobList
+	 * @apiSampleRequest {base URL}/scheduler/jobs/list
 	 * @apiUse successBody
 	 * @apiUse errorBody
 	* @apiParamExample {json} Response:
@@ -75,11 +75,11 @@ module.exports = class Jobs {
 	/**
 	 * Lists of all jobs defined.
 	 * @method
-	 * @name jobList
+	 * @name list
 	 * @returns {JSON} List of jobs.
 	 */
 
-	async jobList(req, res) {
+	async list(req, res) {
 		try {
 			const jobList = await jobsHelper.listJobs()
 			return jobList
@@ -122,11 +122,11 @@ module.exports = class Jobs {
 	}
 
 	/**
-	 * @api {post} /scheduler/now
+	 * @api {post} /scheduler/run
 	 * Define And Schedule Job
 	 * @apiVersion 1.0.0
 	 * @apiGroup jobs
-	 * @apiSampleRequest {base URL}/scheduler/jobs/now
+	 * @apiSampleRequest {base URL}/scheduler/jobs/run
 	 * @apiUse successBody
 	 * @apiUse errorBody
 	 * @apiParamExample {json} Response:
@@ -140,13 +140,12 @@ module.exports = class Jobs {
 	/**
 	 * Define job intance which exicute immediately.
 	 * @method
-	 * @name now
+	 * @name run
 	 * @returns {JSON} schedule status message.
 	 */
 
-	async now(req, res) {
+	async run(req, res) {
 		try {
-			//need to add request validation
 			const newInstance = await jobsHelper.createJobInstanceForNow(req.body.name)
 			return newInstance
 		} catch (err) {
@@ -221,11 +220,11 @@ module.exports = class Jobs {
 	}
 
 	/**
-	 * @api {delete} /scheduler/jobs/deleteJob
+	 * @api {delete} /scheduler/jobs/delete
 	 * delete job data.
 	 * @apiVersion 1.0.0
 	 * @apiGroup jobs
-	 * @apiSampleRequest {base URL}/scheduler/jobs/deleteJob
+	 * @apiSampleRequest {base URL}/scheduler/jobs/delete
 	 * @apiUse successBody
 	 * @apiUse errorBody
 	* @apiParamExample {json} Response:
@@ -240,11 +239,11 @@ module.exports = class Jobs {
 	/**
 	 * Delete job data of specified job.
 	 * @method
-	 * @name cancel
+	 * @name delete
 	 * @returns {JSON} deletion status message.
 	 */
 
-	async deleteJob(req, res) {
+	async delete(req, res) {
 		try {
 			//add validation for param job name
 			const deleteJob = await jobsHelper.deleteJobs(req.body.jobname)
@@ -255,11 +254,11 @@ module.exports = class Jobs {
 	}
 
 	/**
-	 * @api {put} /scheduler/jobs/:jobName
+	 * @api {put} /scheduler/jobs/update
 	 * update job data.
 	 * @apiVersion 1.0.0
 	 * @apiGroup jobs
-	 * @apiSampleRequest {base URL}/scheduler/jobs/:sessionName
+	 * @apiSampleRequest {base URL}/scheduler/jobs/update
 	 * @apiUse successBody
 	 * @apiUse errorBody
 	* @apiParamExample {json} Response:
@@ -274,11 +273,11 @@ module.exports = class Jobs {
 	/**
 	 * update job data of specified job.
 	 * @method
-	 * @name updateJob
+	 * @name update
 	 * @returns {JSON} updation status message.
 	 */
 
-	async updateJob(req, res) {
+	async update(req, res) {
 		try {
 			const updateJob = await jobsHelper.updateJobs(req)
 			return updateJob

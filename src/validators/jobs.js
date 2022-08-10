@@ -1,5 +1,5 @@
 module.exports = {
-	scheduleJob: (req) => {
+	create: (req) => {
 		req.checkBody('name').trim().notEmpty().withMessage('name field is empty')
 
 		req.checkBody('request.method').trim().notEmpty().withMessage('method field is empty')
@@ -34,15 +34,15 @@ module.exports = {
 		req.checkBody('name', 'required job name').notEmpty()
 	},
 
-	now: (req) => {
+	run: (req) => {
 		req.checkBody('name', 'required job name').notEmpty()
 	},
 
-	deleteJob: (req) => {
+	delete: (req) => {
 		req.checkBody('jobname', 'required job name').notEmpty()
 	},
 
-	updateJob: (req) => {
+	update: (req) => {
 		req.checkBody('name', 'required job name').notEmpty()
 	},
 }
