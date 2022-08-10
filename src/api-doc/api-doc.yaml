@@ -14,13 +14,13 @@ servers:
   - url: https://dev.elevate-apis.shikshalokam.org
     description: dev server
 paths:
-  'scheduler/jobs/jobList':
+  'scheduler/jobs/list':
     get:
       summary: List scheduled job details
       tags:
         - Job APIs
       description: "Get list of scheduled jobs.  \n -
-        The API Endpoint for listing scheduled jobs is `scheduler/jobs/jobList` \n - It is mandatory to
+        The API Endpoint for listing scheduled jobs is `scheduler/jobs/list` \n - It is mandatory to
         provide values for parameters which are marked as `required` \n - This is a mandatory parameter
         and cannot be empty or null."
       responses:
@@ -36,13 +36,13 @@ paths:
             application.json:
               schema:
                 '$ref': '#/components/schemas/jobs/jobList400Response'
-  'scheduler/jobs/scheduleJob':
+  'scheduler/jobs/create':
     post:
       summary: Create job
       tags:
         - Job APIs
       description: "Add new job definition. And schedule it.  \n -
-        The API Endpoint for creating a definition is `scheduler/jobs/scheduleJob` \n - It is mandatory to
+        The API Endpoint for creating a definition is `scheduler/jobs/create` \n - It is mandatory to
         provide values for parameters which are marked as `required` \n - This is a mandatory parameter
         and cannot be empty or null."
       requestBody:
@@ -64,13 +64,13 @@ paths:
             application.json:
               schema:
                 '$ref': '#/components/schemas/jobs/createJob400Response'
-  'scheduler/jobs/now':
+  'scheduler/jobs/run':
     post:
       summary: Schedule job for immediate exicution
       tags:
         - Job APIs
       description: "Schedule immediate job.  \n -
-        The API Endpoint for scheduling immediate job is `scheduler/jobs/now` \n - It is mandatory to
+        The API Endpoint for scheduling immediate job is `scheduler/jobs/run` \n - It is mandatory to
         provide values for parameters which are marked as `required` \n - This is a mandatory parameter
         and cannot be empty or null."
       requestBody:
@@ -176,13 +176,13 @@ paths:
             application.json:
               schema:
                 '$ref': '#/components/schemas/jobs/cancelJob400Response'
-  'scheduler/jobs/updateJob':
+  'scheduler/jobs/update':
     put:
       summary: Update specified job definition
       tags:
         - Job APIs
       description: "Update job definition.  \n -
-        The API Endpoint for update a job defenition is `scheduler/jobs/updateJob` \n - It is mandatory to
+        The API Endpoint for update a job defenition is `scheduler/jobs/update` \n - It is mandatory to
         provide values for parameters which are marked as `required` \n - This is a mandatory parameter
         and cannot be empty or null."
       requestBody:
@@ -204,13 +204,13 @@ paths:
             application.json:
               schema:
                 '$ref': '#/components/schemas/jobs/updateJob400Response'
-  'scheduler/jobs/deleteJob':
+  'scheduler/jobs/delete':
     delete:
       summary: Delete specified job definition and it's instances
       tags:
         - Job APIs
       description: "Update job definition.  \n -
-        The API Endpoint for delete specified job definition and it's instances is `scheduler/jobs/deleteJob` \n - It is mandatory to
+        The API Endpoint for delete specified job definition and it's instances is `scheduler/jobs/delete` \n - It is mandatory to
         provide values for parameters which are marked as `required` \n - This is a mandatory parameter
         and cannot be empty or null."
       requestBody:
@@ -489,9 +489,9 @@ components:
       deleteRequest:
         type: object
         required:
-          - name
+          - jobname
         properties:
-          name:
+          jobname:
             type: string
             example: emailCronJob
       deleteJob200Response:
