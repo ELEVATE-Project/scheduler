@@ -37,7 +37,7 @@ module.exports = class Jobs {
 	 * @name scheduleJob
 	 * @returns {JSON} schedule status message.
 	 */
-
+	//make it create
 	async scheduleJob(req, res) {
 		try {
 			let newJob = await jobsHelper.createJobDefinition(req.body)
