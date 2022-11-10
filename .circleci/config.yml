@@ -1,0 +1,32 @@
+version: 2.1 # CircleCI version
+jobs:
+  build:
+    machine: #Linux machine instead of docker environment
+      image: ubuntu-2004:202111-01
+      docker_layer_caching: true
+    working_directory: ~/scheduler # Default working directory
+    steps:
+      - checkout:
+          path: ~/scheduler
+      - run:
+          name: Install dependencies
+          command: cd src/ && npm install
+      - run:
+          name: Installing prerequisites
+          command: |-
+            docker-compose --version
+      - run:
+          name: Starting the docker containers
+          command: |-
+            cd dev-ops/ && docker-compose up -d
+      - run:
+          name: Running test cases
+          command: |-
+            cd src/ &&  npm run test:integration
+      - store_test_results:
+          path: ./dev-ops/report
+workflows:
+  build-and-test: # This is the name of the workflow,
+    # Inside the workflow, you define the jobs you want to run.
+    jobs:
+      - build
