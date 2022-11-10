@@ -1,20 +1,22 @@
 var supertest = require('supertest') //require supertest
 var defaults = require('superagent-defaults')
-let baseURL = 'http://localhost:4000'
 //supertest hits the HTTP server (your app)
 let defaultHeaders
+let baseURL = 'http://localhost:4000'
 
 const loadDefaults = async () => {
 	try {
 		let waitOn = require('wait-on')
 		let opts = {
-			resources: ['http://localhost:4000'],
-			delay: 1000, // initial delay in ms, default 0
-			interval: 500, // poll interval in ms, default 250ms
-			timeout: 300,
+			resources: [baseURL],
+			delay: 100, // initial delay in ms
+			interval: 250, // poll interval in ms
+			timeout: 10000,
+			validateStatus: function (status) {
+				return status >= 200 && status < 500 //Will only success if status code is in between 200 & 500
+			},
 		}
 		await waitOn(opts)
-		console.log(res)
 		defaultHeaders = {
 			Connection: 'keep-alive',
 			'Content-Type': 'application/json',
