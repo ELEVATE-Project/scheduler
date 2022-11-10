@@ -18,7 +18,7 @@ module.exports = {
 		'@middlewares/(.*)': '<rootDir>/middlewares/$1',
 		'@models/(.*)': '<rootDir>/models/$1',
 	},
-	//reporters: ['default', ['jest-junit', { suiteName: 'jest tests', outputDirectory: '../dev-ops/report' }]],
+	reporters: ['default', ['jest-junit', { suiteName: 'jest tests', outputDirectory: '../dev-ops/report' }]],
 }
 /* Add env variables used by jest here because jest do not have access to app or docker env files.
 Make sure the values match with ./dev-ops/integration_test.env */

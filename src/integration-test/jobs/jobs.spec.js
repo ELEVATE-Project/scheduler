@@ -1,3 +1,9 @@
+/**
+ * name : jobs.spec.js
+ * author : nevil
+ * created-date : 9-NOV-2022
+ * Description : jobs test cases.
+ */
 const commonHelper = require('../commonTests')
 const { faker } = require('@faker-js/faker')
 const jobData = require('./jobData')
