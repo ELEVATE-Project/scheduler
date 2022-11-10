@@ -6,15 +6,15 @@ let defaultHeaders
 
 const loadDefaults = async () => {
 	try {
-		/* 		let waitOn = require('wait-on')
+		let waitOn = require('wait-on')
 		let opts = {
 			resources: ['http://localhost:4000'],
 			delay: 1000, // initial delay in ms, default 0
 			interval: 500, // poll interval in ms, default 250ms
 			timeout: 300,
 		}
-		let res = await waitOn(opts)
-		console.log(res) */
+		await waitOn(opts)
+		console.log(res)
 		defaultHeaders = {
 			Connection: 'keep-alive',
 			'Content-Type': 'application/json',
