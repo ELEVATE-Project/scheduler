@@ -21,7 +21,7 @@ describe('/scheduler/jobs', () => {
 		expect(response.body).toMatchSchema(schema.listSchema)
 	})
 	it('/create', async () => {
-		const response = await request.get('/scheduler/jobs/create').send({
+		const response = await request.post('/scheduler/jobs/create').send({
 			name: faker.random.alpha(5),
 			email: ['nevil@tunerlabs.com'],
 			request: {
@@ -39,7 +39,7 @@ describe('/scheduler/jobs', () => {
 	})
 	it('/once', async () => {
 		let jobName = await jobData.insertJob()
-		const response = await request.get('/scheduler/jobs/once').send({
+		const response = await request.post('/scheduler/jobs/once').send({
 			name: jobName,
 			interval: '5 minutes',
 		})
@@ -48,7 +48,7 @@ describe('/scheduler/jobs', () => {
 	})
 	it('/every', async () => {
 		let jobName = await jobData.insertJob()
-		const response = await request.get('/scheduler/jobs/every').send({
+		const response = await request.post('/scheduler/jobs/every').send({
 			name: jobName,
 			interval: '*/1 * * * *',
 		})
@@ -57,7 +57,7 @@ describe('/scheduler/jobs', () => {
 	})
 	it('/run', async () => {
 		let jobName = await jobData.insertJob()
-		const response = await request.get('/scheduler/jobs/run').send({
+		const response = await request.post('/scheduler/jobs/run').send({
 			name: jobName,
 			interval: '*/1 * * * *',
 		})
@@ -66,7 +66,7 @@ describe('/scheduler/jobs', () => {
 	})
 	it('/cancel', async () => {
 		let jobName = await jobData.insertJob()
-		const response = await request.get('/scheduler/jobs/cancel').send({
+		const response = await request.post('/scheduler/jobs/cancel').send({
 			name: jobName,
 		})
 		expect(response.statusCode).toBe(200)
@@ -74,7 +74,7 @@ describe('/scheduler/jobs', () => {
 	})
 	it('/update', async () => {
 		let jobName = await jobData.insertJob()
-		const response = await request.get('/scheduler/jobs/update').send({
+		const response = await request.post('/scheduler/jobs/update').send({
 			name: jobName,
 			email: ['support@elevate.com'],
 			request: {
@@ -90,7 +90,7 @@ describe('/scheduler/jobs', () => {
 	})
 	it('/delete', async () => {
 		let jobName = await jobData.insertJob()
-		const response = await request.get('/scheduler/jobs/delete').send({
+		const response = await request.post('/scheduler/jobs/delete').send({
 			jobname: jobName,
 		})
 		expect(response.statusCode).toBe(200)

@@ -59,6 +59,8 @@ services:
       - mongo
     networks:
       - elevate_net
+    env_file:
+      - integration_test.scheduler.env
 networks:
   elevate_net:
     external: false
