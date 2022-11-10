@@ -3,7 +3,7 @@ jobs:
   build:
     machine: #Linux machine instead of docker environment
       image: ubuntu-2004:202111-01
-      docker_layer_caching: true
+      docker_layer_caching: false
     working_directory: ~/scheduler # Default working directory
     steps:
       - checkout:
@@ -19,6 +19,10 @@ jobs:
           name: Starting the docker containers
           command: |-
             cd dev-ops/ && docker-compose up -d
+      - run:
+          name: Curl
+          command: |-
+            curl localhost:4000
       - run:
           name: Running test cases
           command: |-
