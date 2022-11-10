@@ -11,7 +11,7 @@ const loadDefaults = async () => {
 			resources: [baseURL],
 			delay: 100, // initial delay in ms
 			interval: 250, // poll interval in ms
-			timeout: 10000,
+			timeout: 30000,
 			validateStatus: function (status) {
 				return status >= 200 && status < 500 //Will only success if status code is in between 200 & 500
 			},
