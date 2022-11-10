@@ -20,10 +20,6 @@ jobs:
           command: |-
             cd dev-ops/ && docker-compose up -d
       - run:
-          name: Curl
-          command: |-
-            curl localhost:4000
-      - run:
           name: Running test cases
           command: |-
             cd src/ &&  npm run test:integration

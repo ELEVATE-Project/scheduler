@@ -50,7 +50,7 @@ services:
       - ../src/:/var/src
     ports:
       - '4000:4000'
-    command: [ 'nodemon', 'app.js' ]
+    command: [ 'node', 'app.js' ]
     environment:
       - MONGODB_URL=mongodb://mongo:27017/tl-cron-rest
       - KAFKA_URL=kafka:9092
