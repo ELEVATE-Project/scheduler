@@ -1,4 +1,6 @@
 version: 2.1 # CircleCI version
+orbs:
+  sonarcloud: sonarsource/sonarcloud@1.1.1
 jobs:
   build:
     machine: #Linux machine instead of docker environment
@@ -8,11 +10,18 @@ jobs:
     steps:
       - checkout:
           path: ~/scheduler
+      - restore_cache:
+          key: scheduler-dependency-cache-{{ checksum "src/package.json" }}
       - run:
           name: Install dependencies
           command: cd src/ && npm install
+      - save_cache:
+          key: scheduler-dependency-cache-{{checksum "src/package.json"}}
+          paths:
+            - ./src/node_modules
+      - sonarcloud/scan
       - run:
-          name: Installing prerequisites
+          name: Checking prerequisites
           command: |-
             docker-compose --version
       - run:
