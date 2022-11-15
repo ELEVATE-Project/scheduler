@@ -22,6 +22,9 @@ jobs:
       - run:
           name: Executing unit test cases
           command: cd src/ && npm run test -- --coverage
+      - store_artifacts:
+          path: src/coverage/
+          destination: /coverage/
       - sonarcloud/scan
       - run:
           name: Checking prerequisites
