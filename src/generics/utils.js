@@ -38,8 +38,13 @@ function md5Hash(value) {
 	return md5(value)
 }
 
+const getIstDate = () => {
+	return new Date(new Date().getTime() + (5 * 60 + 30) * 60000)
+}
+
 module.exports = {
 	checkForDuplicateJobDefinition,
 	sendErrorMail,
 	md5Hash,
+	getIstDate,
 }
