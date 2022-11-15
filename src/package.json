@@ -4,7 +4,7 @@
 	"description": "cron wrapper on agenda",
 	"main": "app.js",
 	"scripts": {
-		"test": "",
+		"test": "jest --verbose ./test --config=jest.config.js",
 		"start": "nodemon app.js",
 		"prepare": "cd .. && husky install src/.husky",
 		"test:integration": "jest --verbose ./integration-test  --config=integrationJest.config.js --runInBand"
@@ -20,6 +20,7 @@
 		"express-validator": "^5.3.1",
 		"kafka-node": "^5.0.0",
 		"lodash": "^4.17.21",
+		"md5": "^2.3.0",
 		"module-alias": "^2.2.2",
 		"mongoose": "^6.3.4",
 		"needle": "^3.0.0",

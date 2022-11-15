@@ -19,6 +19,9 @@ jobs:
           key: scheduler-dependency-cache-{{checksum "src/package.json"}}
           paths:
             - ./src/node_modules
+      - run:
+          name: Executing unit test cases
+          command: cd src/ && npm run test -- --coverage
       - sonarcloud/scan
       - run:
           name: Checking prerequisites
