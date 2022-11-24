@@ -1,16 +1,7 @@
-/* async function loadMongo() {
-	let db = await mongoose.connect(global.__MONGO_URI__ + global.mongoDBName, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-	})
-	global.db = db
-} */
-
 describe('Utils', () => {
 	let utils
 
 	beforeAll(async () => {
-		//await loadMongo()
 		utils = require('@generics/utils')
 		return
 	})
@@ -23,15 +14,4 @@ describe('Utils', () => {
 		const actual = await utils.getIstDate()
 		expect(actual).toBeDefined()
 	})
-	/* 	afterAll(async () => {
-		try {
-			mongoose.connection.close()
-		} catch (error) {
-			console.log(`
-            You did something wrong
-            ${error}
-          `)
-			throw error
-		}
-	}) */
 })
