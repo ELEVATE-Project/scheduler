@@ -16,6 +16,7 @@
 		"agenda": "^4.2.1",
 		"body-parser": "^1.20.0",
 		"dotenv": "^16.0.1",
+		"elevate-logger": "^2.0.8",
 		"express": "^4.17.2",
 		"express-validator": "^5.3.1",
 		"kafkajs": "^2.2.3",

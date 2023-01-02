@@ -7,7 +7,8 @@
 
 const validator = require('@middlewares/validator')
 const expressValidator = require('express-validator')
-
+const { elevateLog, correlationId } = require('elevate-logger')
+const logger = elevateLog.init()
 module.exports = (app) => {
 	app.use(expressValidator())
 
@@ -63,6 +64,7 @@ module.exports = (app) => {
 				responseCode: controllerResponse.status,
 				message: controllerResponse.message,
 				result: controllerResponse.result,
+				meta: controllerResponse.meta,
 			})
 		}
 	}
@@ -80,6 +82,8 @@ module.exports = (app) => {
 
 	// Global error handling middleware, should be present in last in the stack of a middleware's
 	app.use((error, req, res, next) => {
+		logger.error('Global error handling middleware', { message: JSON.stringify(error) })
+
 		const status = error.status || 500
 		const success = error.success == false ? error.success : 'SERVER_ERROR'
 		const message = error.message || ''
@@ -92,6 +96,7 @@ module.exports = (app) => {
 			success,
 			message,
 			error: errorData,
+			meta: { correlation: correlationId.getId() },
 		})
 	})
 }

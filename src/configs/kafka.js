@@ -8,6 +8,8 @@
 //Dependencies
 
 const { Kafka } = require('kafkajs')
+const { elevateLog } = require('elevate-logger')
+const logger = elevateLog.init()
 
 module.exports = async () => {
 	const kafkaIps = process.env.KAFKA_URL.split(',')
@@ -26,11 +28,11 @@ module.exports = async () => {
 	await producer.connect()
 
 	producer.on('producer.connect', () => {
-		console.log(`KafkaProvider: connected`)
+		logger.info(`KafkaProvider: connected`)
 	})
 
 	producer.on('producer.disconnect', () => {
-		console.log(`KafkaProvider: could not connect`)
+		logger.error('KafkaProvider: could not connect')
 	})
 
 	global.kafkaProducer = producer
