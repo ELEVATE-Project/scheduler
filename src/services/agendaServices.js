@@ -42,7 +42,7 @@ const defineJob = async (job, jobs, agenda) => {
 
 		needle(request.method, request.url, options)
 			.then(function (response) {
-				logger.infoI('job executed successfully')
+				logger.info('job executed successfully')
 				addExicutionLog(jobDef, common.SUCCESS, { response: common.SUCCESS }, job.attrs.lastRunAt)
 				return 'good'
 			})
