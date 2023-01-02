@@ -21,19 +21,17 @@ app.use(bodyParser.json({ limit: '50MB' }))
 app.use(bodyParser.urlencoded({ limit: '50MB', extended: false }))
 app.use(correlationIdMiddleware)
 
-if (process.env.ENABLE_LOG === 'true') {
-	app.all('*', (req, res, next) => {
-		logger.info('***Scheduler Service Request Log***', {
-			request: {
-				requestType: `Request Type ${req.method} for ${req.url} on ${new Date()} from `,
-				requestHeaders: req.headers,
-				requestBody: req.body,
-				requestFiles: req.files,
-			},
-		})
-		next()
+app.all('*', (req, res, next) => {
+	logger.info('***Scheduler Service Request Log***', {
+		request: {
+			requestType: `Request Type ${req.method} for ${req.url} on ${new Date()} from `,
+			requestHeaders: req.headers,
+			requestBody: req.body,
+			requestFiles: req.files,
+		},
 	})
-}
+	next()
+})
 
 /*api-doc  */
 app.get(process.env.API_DOC_URL, function (req, res) {
