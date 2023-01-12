@@ -32,7 +32,9 @@ module.exports = async () => {
 	})
 
 	producer.on('producer.disconnect', () => {
-		logger.error('KafkaProvider: could not connect')
+		logger.error('KafkaProvider: could not connect', {
+			triggerNotification: true,
+		})
 	})
 
 	global.kafkaProducer = producer

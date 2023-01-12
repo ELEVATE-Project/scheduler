@@ -82,8 +82,6 @@ module.exports = (app) => {
 
 	// Global error handling middleware, should be present in last in the stack of a middleware's
 	app.use((error, req, res, next) => {
-		logger.error('Global error handling middleware', { message: JSON.stringify(error) })
-
 		const status = error.status || 500
 		const success = error.success == false ? error.success : 'SERVER_ERROR'
 		const message = error.message || ''
@@ -91,6 +89,11 @@ module.exports = (app) => {
 
 		if (error.data) {
 			errorData = error.data
+		}
+		if (status == 500) {
+			logger.error('Server error!', { message: error, triggerNotification: true })
+		} else {
+			logger.info(message, { message: error })
 		}
 		res.status(status).json({
 			success,
