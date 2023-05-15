@@ -7,7 +7,7 @@ module.exports = function () {
 	try {
 		const redisConfiguration = {
 			connection: {
-				host: 'redis_bullmq',
+				host: 'localhost',
 				port: 6379,
 			},
 		}

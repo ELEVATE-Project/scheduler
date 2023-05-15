@@ -28,7 +28,7 @@ const createJobDefinition = async (requestBody) => {
 		// Add your own configuration here
 		const redisConfiguration = {
 			connection: {
-				host: 'redis_bullmq',
+				host: 'localhost',
 				port: 6379,
 			},
 		}
