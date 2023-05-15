@@ -7,3 +7,4 @@
 require('@configs/mongodb')()
 require('@configs/kafka')()
 require('@configs/agenda')
+require('@configs/bull')()
