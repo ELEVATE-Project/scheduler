@@ -1,6 +1,7 @@
 const numberOrBoolean = (value) => {
 	return typeof value === 'number' || typeof value === 'boolean'
 }
+
 module.exports = {
 	create: (req) => {
 		req.checkBody('jobName').notEmpty().withMessage('Job name is required'),
@@ -60,5 +61,16 @@ module.exports = {
 	},
 	remove: (req) => {
 		req.checkBody('jobId', 'Job ID is required').notEmpty()
+	},
+	purge: (req) => {
+		req.checkBody('method').isIn(['clean', 'drain', 'obliterate']).withMessage('Invalid method')
+		if (req.body.method == 'clean') {
+			req.checkBody('options.gracePeriod').notEmpty().isInt({ min: 1 }).withMessage('Invalid gracePeriod'),
+				req.checkBody('options.limit').isInt({ min: 0 }).withMessage('Invalid limit'),
+				req
+					.checkBody('options.jobStatus')
+					.isIn(['wait', 'active', 'paused', 'delayed', 'completed', 'failed'])
+					.withMessage('Invalid jobStatus')
+		}
 	},
 }
