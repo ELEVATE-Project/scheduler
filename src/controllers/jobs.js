@@ -31,4 +31,12 @@ module.exports = class Jobs {
 			return err
 		}
 	}
+	async purge(req, res) {
+		try {
+			let newJob = await jobsHelper.purge(req.body)
+			return newJob
+		} catch (err) {
+			return err
+		}
+	}
 }

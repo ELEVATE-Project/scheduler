@@ -8,4 +8,8 @@ module.exports = {
 	JOB_LIST_FETCHED: 'Job list successfully retrieved',
 	NO_JOBS_FOUND: 'No jobs found',
 	FAILED_TO_REMOVE_JOB: 'Failed to remove job from queue',
+	CLEAN_SUCCESS: 'Jobs cleaned successfully',
+	DRAIN_SUCCESS: 'Queue drained successfully',
+	OBLITERATE_SUCCESS: 'Queue obliterated successfully',
+	PURGE_FAILURE: 'Unable to purge the queue',
 }

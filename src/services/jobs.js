@@ -137,3 +137,54 @@ exports.list = async () => {
 		})
 	}
 }
+
+exports.purge = async (requestBody) => {
+	try {
+		const myQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
+		let isDeleted, deletedJobIds, responseMessageKey
+		switch (requestBody.method) {
+			case 'clean':
+				deletedJobIds = await myQueue.clean(
+					requestBody.options.gracePeriod, // 1 minute
+					requestBody.options.limit, // max number of jobs to clean
+					requestBody.options.jobStatus
+				)
+				responseMessageKey = 'CLEAN_SUCCESS'
+				break
+			case 'drain':
+				await myQueue.drain(true).then(() => {
+					isDeleted = true
+				})
+				responseMessageKey = 'DRAIN_SUCCESS'
+
+				break
+			case 'obliterate':
+				await myQueue.obliterate().then(() => {
+					isDeleted = true
+				})
+				responseMessageKey = 'OBLITERATE_SUCCESS'
+				break
+			default:
+				break
+		}
+		if (deletedJobIds || isDeleted) {
+			return common.successResponse({
+				statusCode: 200,
+				message: responseMessage[responseMessageKey],
+				result: deletedJobIds,
+			})
+		}
+		return common.failureResponse({
+			message: responseMessage.PURGE_FAILURE,
+			success: false,
+			status: httpResponse.BAD_REQUEST,
+		})
+	} catch (err) {
+		console.error(err)
+		return common.failureResponse({
+			message: responseMessage.FAILED_TO_PROCESS,
+			success: false,
+			status: httpResponse.BAD_REQUEST,
+		})
+	}
+}
