@@ -2,37 +2,29 @@
 const { Worker } = require('bullmq')
 const needle = require('needle')
 const process = require('process')
+let { redisConfiguration } = require('@configs/redis')
+const { sendErrorMail } = require('@generics/utils')
 
 module.exports = function () {
 	try {
-		const redisConfiguration = {
-			connection: {
-				host: 'localhost',
-				port: 6379,
-			},
-		}
-
 		const worker = new Worker(
-			'email',
+			process.env.DEFAULT_QUEUE,
 			async (job) => {
-				//console.log(job.data)
 				const options = {
 					headers: job.data.request.header ? job.data.request.header : {},
 				}
-
-				needle(job.data.request.method, job.data.request.url, options)
-					.then(function (response) {
-						console.log('job executed successfully')
-						//addExicutionLog(jobDef, common.SUCCESS, { response: common.SUCCESS }, job.attrs.lastRunAt)
-						return 'good'
-					})
-					.catch(function (err) {
-						console.log('Job failed', err)
-						//throw err
-						//addExicutionLog(jobDef, common.FAILED, err, job.attrs.lastRunAt)
-						//send mail notification in case of an error
-						//sendErrorMail(email, jobDef, err)
-					})
+				try {
+					const response = await needle(job.data.request.method, job.data.request.url, options)
+					if (response.statusCode !== 200) {
+						throw new Error(`Request failed with status code ${response.statusCode}`)
+					}
+					console.log('Job executed successfully')
+					return 'good'
+				} catch (err) {
+					console.log('Job failed', err)
+					worker.emit('requestFail', job, err)
+					throw new Error(err) //to trigger retries
+				}
 			},
 			redisConfiguration
 		)
@@ -43,15 +35,12 @@ module.exports = function () {
 		worker.on('completed', (job) => {
 			console.log(`${job.id} has completed!`)
 		})
-		worker.on('fail', (job) => {
-			console.log(`${job.id} has failed!`)
-		})
-		process.on('SIGINT', async () => {
-			console.log('Shutting down worker')
-			await worker.close()
+		worker.on('requestFail', (job, err) => {
+			sendErrorMail(job.data.email, job, err)
+			console.error(`${job.id} has failed!`)
 		})
 	} catch (err) {
-		console.log(err)
+		console.error(err)
 		throw err
 	}
 }

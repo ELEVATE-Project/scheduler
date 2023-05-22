@@ -8,6 +8,7 @@ module.exports = {
 		'@controllers/(.*)': '<rootDir>/controllers/$1',
 		'@generics/(.*)': '<rootDir>/generics/$1',
 		'@constants/(.*)': '<rootDir>/constants/$1',
+		'@configs/(.*)': ['<rootDir>/configs/$1'],
 	},
 	/* 	collectCoverageFrom: ['./services/**'],
 	coverageThreshold: {

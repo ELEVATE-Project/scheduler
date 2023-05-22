@@ -5,7 +5,6 @@ const bodyParser = require('body-parser')
 
 //config
 require('./configs')
-const { jobsReady } = require('./services/agendaServices')
 
 //express
 const app = express()
