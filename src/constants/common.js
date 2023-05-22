@@ -1,3 +1,6 @@
+const { elevateLog, correlationId } = require('elevate-logger')
+const logger = elevateLog.init()
+
 /**
  * name : common.js
  * author : Vishnudas
@@ -5,13 +8,17 @@
  * Description : all common constants
  */
 
-const successResponse = ({ message, success = true, status = 200, result = {} }) => {
-	return {
+const successResponse = ({ message, success = true, status = 200, result = {}, meta = {} }) => {
+	let response = {
 		message,
 		success,
 		status,
 		result,
+		meta: { ...meta, correlation: correlationId.getId() },
 	}
+	logger.info('Request Response', { response: response })
+
+	return response
 }
 
 const failureResponse = ({ message, success = false, status = 500 }) => {

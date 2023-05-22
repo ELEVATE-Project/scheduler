@@ -7,7 +7,8 @@
 
 const validator = require('@middlewares/validator')
 const expressValidator = require('express-validator')
-
+const { elevateLog, correlationId } = require('elevate-logger')
+const logger = elevateLog.init()
 module.exports = (app) => {
 	app.use(expressValidator())
 
@@ -63,6 +64,7 @@ module.exports = (app) => {
 				responseCode: controllerResponse.status,
 				message: controllerResponse.message,
 				result: controllerResponse.result,
+				meta: controllerResponse.meta,
 			})
 		}
 	}
@@ -88,10 +90,16 @@ module.exports = (app) => {
 		if (error.data) {
 			errorData = error.data
 		}
+		if (status == 500) {
+			logger.error('Server error!', { message: error, triggerNotification: true })
+		} else {
+			logger.info(message, { message: error })
+		}
 		res.status(status).json({
 			success,
 			message,
 			error: errorData,
+			meta: { correlation: correlationId.getId() },
 		})
 	})
 }
