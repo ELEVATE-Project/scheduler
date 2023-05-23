@@ -36,7 +36,6 @@ services:
     image: 'redis:7.0.0'
     container_name: redis
     restart: 'always'
-    command: redis-server --appendonly yes --maxmemory-policy noeviction
     ports:
       - "6380:6379"
     networks:
