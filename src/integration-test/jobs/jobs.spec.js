@@ -13,93 +13,121 @@ describe('/scheduler/jobs', () => {
 	beforeAll(async () => {
 		await commonHelper.loadDefaults()
 	})
-	afterAll(async () => {
-		try {
-			await db.dropDatabase()
-		} catch (error) {
-			console.log(error)
-		}
-	})
+	afterAll(async () => {})
 	it('/list', async () => {
 		await jobData.insertJob()
 		const response = await request.get('/scheduler/jobs/list')
 		expect(response.statusCode).toBe(200)
 		expect(response.body).toMatchSchema(schema.listSchema)
 	})
-	it('/create', async () => {
+	it('/create-cronJob', async () => {
 		const response = await request.post('/scheduler/jobs/create').send({
-			name: faker.random.alpha(5),
+			jobName: 'emailCronJobBeforeOneHour',
 			email: ['nevil@tunerlabs.com'],
 			request: {
-				url: 'http://localhost:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour',
-				method: 'get',
-				header: { internal_access_token: 'asdgbsd891237bzus81923ziu3y1283ziu318237aSXS' },
-			},
-			schedule: {
-				scheduleType: 'once',
-				interval: '1 minute',
-			},
-		})
-		expect(response.statusCode).toBe(200)
-		expect(response.body).toMatchSchema(schema.commonResponseSchema)
-	})
-	it('/once', async () => {
-		let jobName = await jobData.insertJob()
-		const response = await request.post('/scheduler/jobs/once').send({
-			name: jobName,
-			interval: '5 minutes',
-		})
-		expect(response.statusCode).toBe(200)
-		expect(response.body).toMatchSchema(schema.commonResponseSchema)
-	})
-	it('/every', async () => {
-		let jobName = await jobData.insertJob()
-		const response = await request.post('/scheduler/jobs/every').send({
-			name: jobName,
-			interval: '*/1 * * * *',
-		})
-		expect(response.statusCode).toBe(200)
-		expect(response.body).toMatchSchema(schema.commonResponseSchema)
-	})
-	it('/run', async () => {
-		let jobName = await jobData.insertJob()
-		const response = await request.post('/scheduler/jobs/run').send({
-			name: jobName,
-			interval: '*/1 * * * *',
-		})
-		expect(response.statusCode).toBe(200)
-		expect(response.body).toMatchSchema(schema.commonResponseSchema)
-	})
-	it('/cancel', async () => {
-		let jobName = await jobData.insertJob()
-		const response = await request.post('/scheduler/jobs/cancel').send({
-			name: jobName,
-		})
-		expect(response.statusCode).toBe(200)
-		expect(response.body).toMatchSchema(schema.commonResponseSchema)
-	})
-	it('/update', async () => {
-		let jobName = await jobData.insertJob()
-		const response = await request.post('/scheduler/jobs/update').send({
-			name: jobName,
-			email: ['support@elevate.com'],
-			request: {
-				url: 'http://localhost:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour',
+				url: 'http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour',
 				method: 'get',
 				header: {
-					internal_access_token: 'asdgbsd891237bzus81923ziu3y1283ziu318237aSXS',
+					internal_access_token: 'Fgn1xT7pmCK9PSxVt7yr',
 				},
+			},
+			jobOptions: {
+				jobId: 'emailCronJobBeforeOneHour',
+				repeat: {
+					pattern: '15 3 * * *',
+				},
+				removeOnComplete: 100,
+				removeOnFail: 200,
+				attempts: 3,
 			},
 		})
 		expect(response.statusCode).toBe(200)
-		expect(response.body).toMatchSchema(schema.commonResponseSchema)
+		expect(response.body).toMatchSchema(schema.createCronSchema)
 	})
-	it('/delete', async () => {
-		let jobName = await jobData.insertJob()
-		const response = await request.post('/scheduler/jobs/delete').send({
-			jobname: jobName,
+	it('/create-delay', async () => {
+		const response = await request.post('/scheduler/jobs/create').send({
+			jobName: 'emailCronJobBeforeOneHour-delay',
+			email: ['nevil@tunerlabs.com'],
+			request: {
+				url: 'http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour',
+				method: 'get',
+				header: {
+					internal_access_token: 'Fgn1xT7pmCK9PSxVt7yr',
+				},
+			},
+			jobOptions: {
+				jobId: 'emailCronJobBeforeOneHour-delay',
+				delay: 500000,
+				removeOnComplete: true,
+				removeOnFail: false,
+				attempts: 1,
+			},
 		})
 		expect(response.statusCode).toBe(200)
-		expect(response.body).toMatchSchema(schema.commonResponseSchema)
+		expect(response.body).toMatchSchema(schema.createDelaySchema)
+	})
+	it('/create-interval', async () => {
+		const response = await request.post('/scheduler/jobs/create').send({
+			jobName: 'emailCronJobBeforeOneHour',
+			email: ['nevil@tunerlabs.com'],
+			request: {
+				url: 'http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour',
+				method: 'get',
+				header: {
+					internal_access_token: 'Fgn1xT7pmCK9PSxVt7yr',
+				},
+			},
+			jobOptions: {
+				jobId: 'emailCronJobBeforeOneHour-interval',
+				repeat: {
+					every: 10000,
+					limit: 2,
+				},
+				removeOnComplete: 2,
+				removeOnFail: 200,
+				attempts: 1,
+			},
+		})
+		expect(response.statusCode).toBe(200)
+		expect(response.body).toMatchSchema(schema.createIntervalSchema)
+	})
+	it('/remove', async () => {
+		let job = await jobData.insertJob()
+
+		const response = await request.post('/scheduler/jobs/remove').send({
+			jobId: job,
+		})
+		expect(response.statusCode).toBe(200)
+		expect(response.body).toMatchSchema(schema.removeSchema)
+	})
+	it('/purge-clean', async () => {
+		let job = await jobData.insertJob()
+
+		const response = await request.post('/scheduler/jobs/purge').send({
+			method: 'clean',
+			options: {
+				gracePeriod: 60,
+				limit: 0,
+				jobStatus: 'failed',
+			},
+		})
+		expect(response.statusCode).toBe(200)
+		expect(response.body).toMatchSchema(schema.purgeCleanSchema)
+	})
+	it('/purge-drain', async () => {
+		let job = await jobData.insertJob()
+
+		const response = await request.post('/scheduler/jobs/purge').send({ method: 'drain' })
+		expect(response.statusCode).toBe(200)
+		expect(response.body).toMatchSchema(schema.purgeDrainSchema)
+	})
+	it('/purge-obliterate', async () => {
+		let job = await jobData.insertJob()
+
+		const response = await request.post('/scheduler/jobs/purge').send({
+			method: 'obliterate',
+		})
+		expect(response.statusCode).toBe(200)
+		expect(response.body).toMatchSchema(schema.purgeObliterateSchema)
 	})
 })

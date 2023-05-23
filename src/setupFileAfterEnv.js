@@ -1,32 +1,35 @@
-const mongoose = require('mongoose')
 const { matchers } = require('jest-json-schema')
 expect.extend(matchers)
+const Redis = require('ioredis')
+let redis
+beforeAll(async () => {
+	redis = new Redis(6380, 'localhost')
 
-//Connect to database
+	redis.on('connect', () => {
+		console.log('Redis connected successfully')
+	})
 
-const db = mongoose.createConnection('mongodb://localhost:27017/tl-cron-rest', {
-	useNewUrlParser: true,
+	redis.on('error', (error) => {
+		console.error('Error connecting to Redis:', error)
+	})
+
+	await new Promise((resolve) => {
+		redis.on('connect', resolve)
+	})
 })
-
-db.on('error', function () {
-	console.log('Database connection error:')
-})
-
-db.once('open', function () {
-	//console.log('Connected to DB')
-})
-
-global.db = db
-
-beforeAll(async () => {})
 
 afterAll(async () => {
-	try {
-		await db.dropDatabase()
-		await db.close()
-		mongoose.disconnect()
-	} catch (error) {
-		console.log(error)
-	}
-	//mongoose.disconnect()
+	await new Promise((resolve, reject) => {
+		redis.flushdb((err, succeeded) => {
+			if (err) {
+				console.error('Error flushing Redis database:', err)
+				reject(err)
+			} else {
+				console.log('Redis database flushed successfully')
+				resolve(succeeded)
+			}
+		})
+	})
+
+	redis.quit()
 })
