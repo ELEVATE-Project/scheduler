@@ -324,7 +324,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/purge-failure-schema'
+                $ref: '#/components/schemas/purge-success-response-schema'
               examples:
                 Clean method:
                   value:
@@ -356,7 +356,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/purge-failure-schema'
               examples:
                 example1:
                   value:
@@ -371,13 +371,26 @@ paths:
       operationId: /scheduler/jobs/list
       tags:
         - Default
-      parameters: []
+      parameters:
+        - in: query
+          name: filter
+          description: ''
+          schema:
+            type: string
+            enum:
+              - completed
+              - failed
+              - delayed
+              - active
+              - wait
+              - paused
+              - repeat
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/list-fail-schema'
+                $ref: '#/components/schemas/list-response-schema'
               examples:
                 Response:
                   value:
@@ -416,7 +429,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/list-fail-schema'
               examples:
                 Failure Response:
                   value:
@@ -427,6 +440,7 @@ paths:
                       correlation: 758680ac-06cd-4d45-a7ec-eddad54356a0
           description: Failure Response
       summary: Get list of jobs
+    parameters: []
 components:
   schemas:
     create-schema:
