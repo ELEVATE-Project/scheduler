@@ -32,12 +32,18 @@ paths:
   /scheduler/jobs/create:
     post:
       summary: Create repeatable jobs
-      description: ' Create repeatable jobs with different options (delay, interval, cron). Accepts a JSON request body with specific parameters.'
+      description: >-
+        The Scheduler Service using BullMQ allows you to add jobs to a queue
+        with different scheduling options. It supports three types of jobs:
+        delayed jobs, repeatable jobs with a cron pattern, and repeatable jobs
+        with an interval. Accepts a JSON request body with specific parameters.
       operationId: /scheduler/jobs/create
       tags:
         - Default
       parameters: []
       requestBody:
+        description: Job details
+        required: true
         content:
           application/json:
             schema:
@@ -399,17 +405,23 @@ components:
       properties:
         jobName:
           type: string
+          description: Name of the job to be executed
         email:
           type: array
           items:
             type: string
+          description: ' Email addresses associated with the job to report job failure'
         request:
           type: object
           properties:
             url:
               type: string
+              description: URL for the HTTP request
             method:
               type: string
+              enum:
+                - get, post, put, delete
+              description: HTTP method for the request
             header:
               type: object
               properties:
@@ -417,39 +429,22 @@ components:
                   type: string
               required:
                 - internal_access_token
+              description: Headers for the request
           required:
             - url
             - method
             - header
+          description: Details about the HTTP request to be made when the job is processed
         jobOptions:
-          type: object
-          properties:
-            jobId:
-              type: string
-            repeat:
-              type: object
-              properties:
-                every:
-                  type: number
-                limit:
-                  type: number
-                pattern:
-                  type: string
-            removeOnComplete:
-              type: number
-            removeOnFail:
-              type: number
-            attempts:
-              type: number
-            delay:
-              type: string
-          required:
-            - jobId
+          oneOf:
+            - $ref: '#/components/schemas/delay'
+            - $ref: '#/components/schemas/repeat'
       required:
         - jobName
         - email
         - request
         - jobOptions
+      description: Additional options for the job
     create-response-schema:
       type: object
       properties:
@@ -591,17 +586,41 @@ components:
       properties:
         method:
           type: string
+          enum:
+            - clean, drain, obliterate
+          description: BullMQ method for purging jobs
         options:
-          type: object
-          properties:
-            gracePeriod:
-              type: number
-            limit:
-              type: number
-            jobStatus:
-              type: string
+          oneOf:
+            - $ref: '#/components/schemas/CleanOptions'
+            - $ref: '#/components/schemas/DrainOrObliterateOptions'
+          description: Options specific to the selected purging method
       required:
         - method
+    CleanOptions:
+      type: object
+      properties:
+        gracePeriod:
+          type: integer
+          description: Time in milliseconds for grace period
+        limit:
+          type: integer
+          description: Maximum number of jobs to remove, 0 means all
+        jobStatus:
+          type: string
+          enum:
+            - completed
+            - failed
+            - active
+            - delayed
+            - waiting
+          description: Filter jobs based on their status
+      required:
+        - gracePeriod
+        - limit
+        - jobStatus
+    DrainOrObliterateOptions:
+      type: object
+      description: No additional options required for the 'drain' or 'obliterate' method
     create-response-failure-schema:
       type: object
       properties:
@@ -683,4 +702,71 @@ components:
           properties:
             correlation:
               type: string
+    IntervalRepeat:
+      type: object
+      properties:
+        every:
+          type: integer
+          description: Interval duration in milliseconds between each execution of the job
+        limit:
+          type: integer
+          description: Maximum number of times the job should be repeated (optional)
+      required:
+        - every
+    CronRepeat:
+      type: object
+      properties:
+        pattern:
+          type: string
+          description: Cron pattern specifying the schedule for job execution
+      required:
+        - pattern
+    repeat:
+      $schema: http://json-schema.org/draft-04/schema#
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: Unique identifier for the job
+        repeat:
+          oneOf:
+            - $ref: '#/components/schemas/IntervalRepeat'
+            - $ref: '#/components/schemas/CronRepeat'
+          description: Additional options for the job
+        removeOnComplete:
+          type: number
+          description: Number of jobs to keep after completion
+        removeOnFail:
+          type: number
+          description: Number of jobs to keep after failure
+        attempts:
+          type: number
+          description: Number of times the job can be retried if it fails
+      required:
+        - jobId
+        - repeat
+    delay:
+      $schema: http://json-schema.org/draft-04/schema#
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: Unique identifier for the job
+        delay:
+          type: number
+          description: Delay in milliseconds before the job is processed
+        removeOnComplete:
+          type: boolean
+          description: >-
+            Whether the job should be removed from the queue when completed
+            successfully
+        removeOnFail:
+          type: boolean
+          description: Whether the job should be removed from the queue if it fails
+        attempts:
+          type: number
+          description: Number of times the job can be retried if it fails
+      required:
+        - delay
+        - jobId
   securitySchemes: {}
