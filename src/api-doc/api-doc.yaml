@@ -240,10 +240,11 @@ paths:
       deprecated: false
   /scheduler/jobs/remove:
     post:
-      summary: To remove a single job
+      summary: Remove a single job from the scheduler queue
       description: >-
-        Remove a single job by providing its ID. Accepts a JSON request body
-        with the jobId parameter.
+        It is used to remove a single job from the scheduler queue. The request
+        body contains a JSON object with the jobId property, representing the
+        unique identifier of the job to be removed.
       operationId: /scheduler/jobs/remove
       tags:
         - Default
@@ -309,9 +310,9 @@ paths:
                 value:
                   method: clean
                   options:
-                    gracePeriod: 60
-                    limit: 0
-                    jobStatus: failed
+                    gracePeriod: 10000
+                    limit: 100
+                    jobStatus: completed
               Drain method:
                 value:
                   method: drain
@@ -323,7 +324,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/purge-success-response-schema'
+                $ref: '#/components/schemas/purge-failure-schema'
               examples:
                 Clean method:
                   value:
@@ -350,9 +351,23 @@ paths:
                     meta:
                       correlation: fe7d4a8f-76f0-436a-9f9b-e118a89c346f
           description: Success Response
+        '400':
+          description: Failure Response
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                example1:
+                  value:
+                    success: false
+                    message: Unable to purge the queue
+                    error: []
+                    meta:
+                      correlation: 758680ac-06cd-4d45-a7ec-eddad54356a0
   /scheduler/jobs/list:
     get:
-      description: Retrieve a list of jobs.
+      description: Get a list of jobs from the scheduler
       operationId: /scheduler/jobs/list
       tags:
         - Default
@@ -362,7 +377,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/list-response-schema'
+                $ref: '#/components/schemas/list-fail-schema'
               examples:
                 Response:
                   value:
@@ -397,6 +412,20 @@ paths:
                     meta:
                       correlation: 8dec3a0b-1622-4d11-9071-4434c126b598
           description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                Failure Response:
+                  value:
+                    success: false
+                    message: No jobs found
+                    error: []
+                    meta:
+                      correlation: 758680ac-06cd-4d45-a7ec-eddad54356a0
+          description: Failure Response
       summary: Get list of jobs
 components:
   schemas:
@@ -420,7 +449,10 @@ components:
             method:
               type: string
               enum:
-                - get, post, put, delete
+                - get
+                - post
+                - put
+                - delete
               description: HTTP method for the request
             header:
               type: object
@@ -515,6 +547,7 @@ components:
       properties:
         jobId:
           type: string
+          description: Unique identifier of the job to be removed
       required:
         - jobId
     remove-job-response-failure-schema:
@@ -587,7 +620,9 @@ components:
         method:
           type: string
           enum:
-            - clean, drain, obliterate
+            - clean
+            - drain
+            - obliterate
           description: BullMQ method for purging jobs
         options:
           oneOf:
@@ -604,7 +639,7 @@ components:
           description: Time in milliseconds for grace period
         limit:
           type: integer
-          description: Maximum number of jobs to remove, 0 means all
+          description: Maximum number of jobs to remove,0 to remove all
         jobStatus:
           type: string
           enum:
@@ -722,7 +757,6 @@ components:
       required:
         - pattern
     repeat:
-      $schema: http://json-schema.org/draft-04/schema#
       type: object
       properties:
         jobId:
@@ -746,7 +780,6 @@ components:
         - jobId
         - repeat
     delay:
-      $schema: http://json-schema.org/draft-04/schema#
       type: object
       properties:
         jobId:
@@ -769,4 +802,56 @@ components:
       required:
         - delay
         - jobId
+    list-fail-schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        error:
+          type: array
+          items:
+            type: string
+        meta:
+          type: object
+          properties:
+            correlation:
+              type: string
+    purge-failure-schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        error:
+          type: array
+          items:
+            type: string
+        meta:
+          type: object
+          properties:
+            correlation:
+              type: string
+    common-400:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: false
+        message:
+          type: string
+          default: Failed to process the request
+        error:
+          type: array
+          items:
+            type: string
+          minItems: 0
+          uniqueItems: false
+        meta:
+          type: object
+          properties:
+            correlation:
+              type: string
   securitySchemes: {}
