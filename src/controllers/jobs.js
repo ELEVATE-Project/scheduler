@@ -25,7 +25,7 @@ module.exports = class Jobs {
 	}
 	async list(req, res) {
 		try {
-			let newJob = await jobsHelper.list(req.body)
+			let newJob = await jobsHelper.list(req.query)
 			return newJob
 		} catch (err) {
 			return err

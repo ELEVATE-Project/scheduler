@@ -35,7 +35,7 @@ exports.create = async (requestBody) => {
 
 		if (newJob) {
 			return common.successResponse({
-				statusCode: 200,
+				status: httpResponse.CREATED,
 				message: responseMessage.JOB_QUEUED,
 				result: newJob,
 			})
@@ -87,7 +87,7 @@ exports.remove = async (requestBody) => {
 
 		if (removedRepeatableJob || removedJob) {
 			return common.successResponse({
-				statusCode: 200,
+				status: httpResponse.OK,
 				message: responseMessage.JOB_REMOVED,
 				result: removedRepeatableJob || removedJob,
 			})
@@ -107,26 +107,28 @@ exports.remove = async (requestBody) => {
 	}
 }
 
-exports.list = async () => {
+exports.list = async (query) => {
 	try {
+		const filters = query.filter ? query.filter.split(',') : [] // Split the filter string if it exists, otherwise use an empty array
+
 		const myQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
 
-		let allJobs = await myQueue.getJobs([], 0, -1, true)
+		let allJobs = await myQueue.getJobs(filters, 0, -1, true)
 		allJobs.forEach((pendingJob) => {
 			delete pendingJob['data']
 		})
 
-		if (allJobs) {
-			return common.successResponse({
-				statusCode: 200,
-				message: responseMessage.JOB_LIST_FETCHED,
-				result: allJobs,
+		if (allJobs.length === 0) {
+			return common.failureResponse({
+				message: responseMessage.NO_JOBS_FOUND,
+				success: false,
+				status: httpResponse.BAD_REQUEST,
 			})
 		}
-		return common.failureResponse({
-			message: responseMessage.NO_JOBS_FOUND,
-			success: false,
-			status: httpResponse.BAD_REQUEST,
+		return common.successResponse({
+			status: httpResponse.OK,
+			message: responseMessage.JOB_LIST_FETCHED,
+			result: allJobs,
 		})
 	} catch (err) {
 		console.error(err)
@@ -169,7 +171,7 @@ exports.purge = async (requestBody) => {
 		}
 		if (deletedJobIds || isDeleted) {
 			return common.successResponse({
-				statusCode: 200,
+				status: httpResponse.OK,
 				message: responseMessage[responseMessageKey],
 				result: deletedJobIds,
 			})
