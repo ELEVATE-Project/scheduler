@@ -41,7 +41,7 @@ describe('/scheduler/jobs', () => {
 				attempts: 3,
 			},
 		})
-		expect(response.statusCode).toBe(200)
+		expect(response.statusCode).toBe(201)
 		expect(response.body).toMatchSchema(schema.createCronSchema)
 	})
 	it('/create-delay', async () => {
@@ -63,7 +63,7 @@ describe('/scheduler/jobs', () => {
 				attempts: 1,
 			},
 		})
-		expect(response.statusCode).toBe(200)
+		expect(response.statusCode).toBe(201)
 		expect(response.body).toMatchSchema(schema.createDelaySchema)
 	})
 	it('/create-interval', async () => {
@@ -88,7 +88,7 @@ describe('/scheduler/jobs', () => {
 				attempts: 1,
 			},
 		})
-		expect(response.statusCode).toBe(200)
+		expect(response.statusCode).toBe(201)
 		expect(response.body).toMatchSchema(schema.createIntervalSchema)
 	})
 	it('/remove', async () => {
