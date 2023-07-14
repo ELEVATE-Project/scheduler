@@ -13,7 +13,8 @@ const httpResponse = require('@constants/httpResponse')
 const common = require('@constants/common')
 const { sendErrorMail } = require('@generics/utils')
 const log = require('@models/log')
-
+const { elevateLog } = require('elevate-logger')
+const logger = elevateLog.init()
 //restart agenda instances when server restarts
 const jobsReady = agenda._ready.then(async () => {
 	const jobDefCollection = agenda._mdb.collection(configuration.definition)
@@ -41,7 +42,7 @@ const defineJob = async (job, jobs, agenda) => {
 
 		needle(request.method, request.url, options)
 			.then(function (response) {
-				console.log('job executed successfully')
+				logger.info('job executed successfully')
 				addExicutionLog(jobDef, common.SUCCESS, { response: common.SUCCESS }, job.attrs.lastRunAt)
 				return 'good'
 			})

@@ -6,14 +6,17 @@
  */
 
 //Dependencies
-const Kafka = require('kafka-node')
 
-module.exports = () => {
-	const Producer = Kafka.Producer
-	const KafkaClient = new Kafka.KafkaClient({
-		kafkaHost: process.env.KAFKA_URL,
+const { Kafka } = require('kafkajs')
+const { elevateLog } = require('elevate-logger')
+const logger = elevateLog.init()
+
+module.exports = async () => {
+	const kafkaIps = process.env.KAFKA_URL.split(',')
+	const KafkaClient = new Kafka({
+		clientId: 'mentoring',
+		brokers: kafkaIps,
 	})
-	const producer = new Producer(KafkaClient)
 
 	/* Uncomment while writing consuming actions for this service */
 	// const Consumer = Kafka.Consumer;
@@ -21,29 +24,18 @@ module.exports = () => {
 
 	/* Registered events */
 
-	KafkaClient.on('error', (error) => {
-		console.log('Kafka connection error: ', error)
+	const producer = KafkaClient.producer()
+	await producer.connect()
+
+	producer.on('producer.connect', () => {
+		logger.info(`KafkaProvider: connected`)
 	})
 
-	KafkaClient.on('connect', () => {
-		console.log('Connected to kafka client')
+	producer.on('producer.disconnect', () => {
+		logger.error('KafkaProvider: could not connect', {
+			triggerNotification: true,
+		})
 	})
-
-	producer.on('error', (error) => {
-		console.log('Kafka producer intialization error: ', error)
-	})
-
-	producer.on('ready', () => {
-		console.log('Producer initialized successfully')
-	})
-
-	// consumer.on('error', error => {
-	//     console.log('Kafka consumer intialization error: ', error);
-	// });
-
-	// consumer.on('message', message => {
-	//     // perform action using message
-	// });
 
 	global.kafkaProducer = producer
 	global.kafkaClient = KafkaClient
