@@ -55,7 +55,37 @@ exports.create = async (requestBody) => {
 		})
 	}
 }
+exports.updateDelay = async (requestBody) => {
+	try {
+		const myQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
+		const jobExists = await myQueue.getJob(requestBody.id)
 
+		if (!jobExists) {
+			return common.failureResponse({
+				message: responseMessage.JOB_NOT_FOUND,
+				success: false,
+				status: httpResponse.NOT_FOUND,
+			})
+		}
+		await jobExists.changeDelay(requestBody.delay)
+		const updatedJob = await myQueue.getJob(requestBody.id)
+
+		if (updatedJob.delay == requestBody.delay) {
+			return common.successResponse({
+				status: httpResponse.OK,
+				message: responseMessage.DELAY_UPDATED,
+				result: updatedJob,
+			})
+		}
+	} catch (err) {
+		console.error(err)
+		return common.failureResponse({
+			message: responseMessage.JOB_NOT_FOUND,
+			success: false,
+			status: httpResponse.BAD_REQUEST,
+		})
+	}
+}
 exports.remove = async (requestBody) => {
 	try {
 		const myQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
