@@ -5,11 +5,11 @@
  * Description : Jobs routes
  */
 
-const jobsHelper = require('@services/jobs')
+const jobsService = require('@services/jobs')
 module.exports = class Jobs {
 	async create(req, res) {
 		try {
-			let newJob = await jobsHelper.create(req.body)
+			let newJob = await jobsService.create(req.body)
 			return newJob
 		} catch (err) {
 			return err
@@ -17,7 +17,7 @@ module.exports = class Jobs {
 	}
 	async remove(req, res) {
 		try {
-			let newJob = await jobsHelper.remove(req.body)
+			let newJob = await jobsService.remove(req.body)
 			return newJob
 		} catch (err) {
 			return err
@@ -25,7 +25,7 @@ module.exports = class Jobs {
 	}
 	async list(req, res) {
 		try {
-			let newJob = await jobsHelper.list(req.query)
+			let newJob = await jobsService.list(req.query)
 			return newJob
 		} catch (err) {
 			return err
@@ -33,7 +33,7 @@ module.exports = class Jobs {
 	}
 	async purge(req, res) {
 		try {
-			let newJob = await jobsHelper.purge(req.body)
+			let newJob = await jobsService.purge(req.body)
 			return newJob
 		} catch (err) {
 			return err
