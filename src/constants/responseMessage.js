@@ -12,4 +12,5 @@ module.exports = {
 	DRAIN_SUCCESS: 'Queue drained successfully',
 	OBLITERATE_SUCCESS: 'Queue obliterated successfully',
 	PURGE_FAILURE: 'Unable to purge the queue',
+	DELAY_UPDATED: 'Job delay updated successfully',
 }

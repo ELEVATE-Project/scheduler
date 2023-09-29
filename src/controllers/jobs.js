@@ -15,6 +15,14 @@ module.exports = class Jobs {
 			return err
 		}
 	}
+	async updateDelay(req, res) {
+		try {
+			let newJob = await jobsHelper.updateDelay(req.body)
+			return newJob
+		} catch (err) {
+			return err
+		}
+	}
 	async remove(req, res) {
 		try {
 			let newJob = await jobsService.remove(req.body)
