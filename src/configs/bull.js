@@ -13,13 +13,26 @@ module.exports = function () {
 				const options = {
 					headers: job.data.request.header ? job.data.request.header : {},
 				}
+				const bodyData = {
+					jobId: job.opts.jobId,
+					emailTemplateCode: job.opts.emailTemplate,
+				}
 				try {
-					const response = await needle(job.data.request.method, job.data.request.url, options)
-					if (response.statusCode !== 200) {
-						throw new Error(`Request failed with status code ${response.statusCode}`)
-					}
-					console.log('Job executed successfully')
-					return 'good'
+					needle.request(
+						job.data.request.method,
+						job.data.request.url,
+						bodyData,
+						options,
+						(error, response, body) => {
+							if (!error && response.statusCode === 200) {
+								console.log('Request was successful')
+								console.log('Response:', body)
+							} else {
+								console.error('Request failed with error:', error)
+								console.error('Response:', body)
+							}
+						}
+					)
 				} catch (err) {
 					console.log('Job failed', err)
 					worker.emit('requestFail', job, err)
