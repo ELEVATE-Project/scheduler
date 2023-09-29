@@ -2,6 +2,7 @@ require('module-alias/register')
 require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
+const path = require('path')
 
 const { elevateLog, correlationIdMiddleware } = require('elevate-logger')
 elevateLog.config(process.env.ERROR_LOG_LEVEL, 'scheduler', process.env.DISABLE_LOG)

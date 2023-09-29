@@ -11,7 +11,7 @@
     #- debug: msg="{{ slurpfile['content'] | b64decode }}"
     #- debug: msg="the value of foo.txt is {{ contents }}"
     - name: Run vault credentials
-      shell: "curl --location --request GET '{{ vaultAddress }}v1/elevate/data/scheduler' --header 'X-Vault-Token: {{ slurpfile['content'] | b64decode }}' | jq '.data' > '{{ project_path 
+      shell: "curl --location --request GET '{{ vaultAddress }}scheduler' --header 'X-Vault-Token: {{ slurpfile['content'] | b64decode }}' | jq '.data' > '{{ project_path 
 }}/data2.json'"
       register: vaultCurl
     - name: Set some variable
@@ -60,6 +60,11 @@
     - name: Start pm2
       command: "chdir={{current_path}}/src pm2 start app.js -i 2 --name elevate-scheduler"
       register: pm2Info
+
+    - name: generate api-doc 
+      shell: cd {{current_path}}/src && redoc-cli build -o ./api-doc/index.html ./api-doc/api-doc.yaml
+      register: apiDocResponse 
+    - debug: msg=" Api-doc {{ apiDocResponse }} "
 
     - name: debug info
       debug:
