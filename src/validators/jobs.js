@@ -1,48 +1,76 @@
+const numberOrBoolean = (value) => {
+	return typeof value === 'number' || typeof value === 'boolean'
+}
+
 module.exports = {
 	create: (req) => {
-		req.checkBody('name').trim().notEmpty().withMessage('name field is empty')
-
-		req.checkBody('request.method').trim().notEmpty().withMessage('method field is empty')
-
-		req.checkBody('request.url').trim().notEmpty().withMessage('url field is empty')
-
-		req.checkBody('schedule.scheduleType').trim().notEmpty().withMessage('scheduleType field is empty')
-
-		req.checkBody('email')
-			.trim()
-			.notEmpty()
-			.withMessage('email field is empty')
-			.isEmail()
-			.matches(
-				/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-			)
-			.withMessage('email is invalid')
-			.normalizeEmail()
+		req.checkBody('jobName').notEmpty().withMessage('Job name is required'),
+			req.checkBody('request.url').notEmpty().withMessage('Request URL is required'),
+			req.checkBody('request.method').notEmpty().withMessage('Request method is required'),
+			req
+				.checkBody('request.header.internal_access_token')
+				.notEmpty()
+				.withMessage('Internal access token is required'),
+			req.checkBody('jobOptions.jobId').notEmpty().withMessage('Job ID is required'),
+			req
+				.checkBody('jobOptions.delay')
+				.optional({ nullable: true })
+				.isInt({ min: 0 })
+				.withMessage('Delay should be a non-negative integer'),
+			req
+				.checkBody('jobOptions.removeOnComplete')
+				.optional({ nullable: true })
+				.custom(numberOrBoolean)
+				.withMessage('removeOnComplete should be a number or a boolean'),
+			req
+				.checkBody('jobOptions.removeOnFail')
+				.optional({ nullable: true })
+				.custom(numberOrBoolean)
+				.withMessage('removeOnFail should be a number or a boolean'),
+			req
+				.checkBody('jobOptions.attempts')
+				.optional({ nullable: true })
+				.isInt({ min: 1 })
+				.withMessage('Attempts should be a positive integer'),
+			req
+				.checkBody('jobOptions.repeat.pattern')
+				.optional({ nullable: true })
+				.isString()
+				.withMessage('Repeat pattern should be a string'),
+			req
+				.checkBody('jobOptions.repeat.every')
+				.optional({ nullable: true })
+				.isInt({ min: 1 })
+				.withMessage('Repeat every should be a positive integer'),
+			req
+				.checkBody('jobOptions.repeat.limit')
+				.optional({ nullable: true })
+				.isInt({ min: 1 })
+				.withMessage('Repeat limit should be a positive integer'),
+			req
+				.checkBody('email')
+				.trim()
+				.notEmpty()
+				.withMessage('email field is empty')
+				.isEmail()
+				.matches(
+					/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+				)
+				.withMessage('email is invalid')
+				.normalizeEmail()
 	},
-
-	once: (req) => {
-		req.checkBody('name', 'required job name').notEmpty()
-		req.checkBody('interval', 'required interval').notEmpty()
+	remove: (req) => {
+		req.checkBody('jobId', 'Job ID is required').notEmpty()
 	},
-
-	every: (req) => {
-		req.checkBody('name', 'required job name').notEmpty()
-		req.checkBody('interval', 'required interval').notEmpty()
-	},
-
-	cancel: (req) => {
-		req.checkBody('name', 'required job name').notEmpty()
-	},
-
-	run: (req) => {
-		req.checkBody('name', 'required job name').notEmpty()
-	},
-
-	delete: (req) => {
-		req.checkBody('jobname', 'required job name').notEmpty()
-	},
-
-	update: (req) => {
-		req.checkBody('name', 'required job name').notEmpty()
+	purge: (req) => {
+		req.checkBody('method').isIn(['clean', 'drain', 'obliterate']).withMessage('Invalid method')
+		if (req.body.method == 'clean') {
+			req.checkBody('options.gracePeriod').notEmpty().isInt({ min: 1 }).withMessage('Invalid gracePeriod'),
+				req.checkBody('options.limit').isInt({ min: 0 }).withMessage('Invalid limit'),
+				req
+					.checkBody('options.jobStatus')
+					.isIn(['wait', 'active', 'paused', 'delayed', 'completed', 'failed'])
+					.withMessage('Invalid jobStatus')
+		}
 	},
 }

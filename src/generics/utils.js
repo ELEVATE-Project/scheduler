@@ -9,13 +9,7 @@
 const kafkaCommunication = require('../generics/kafka-communication')
 const md5 = require('md5')
 
-//checking presents of data in jobDefinition collection
-const checkForDuplicateJobDefinition = async (job, jobs) => {
-	const count = await jobs.countDocuments({ name: job.name })
-	return count
-}
-
-//push error mail to Kafka
+//Push error mail to Kafka
 const sendErrorMail = async (email, jobData, errorDetails) => {
 	try {
 		const payload = {
@@ -23,7 +17,7 @@ const sendErrorMail = async (email, jobData, errorDetails) => {
 			email: {
 				to: email,
 				subject: 'Job Failure Report : ' + jobData.name, // Subject line
-				body: `Details Name : ${jobData.name} URL : ${jobData.request.url} Fail reason : ${JSON.stringify(
+				body: `Details Name : ${jobData.name} URL : ${jobData.data.request.url} Fail reason : ${JSON.stringify(
 					errorDetails
 				)}`,
 			},
@@ -43,7 +37,6 @@ const getIstDate = () => {
 }
 
 module.exports = {
-	checkForDuplicateJobDefinition,
 	sendErrorMail,
 	md5Hash,
 	getIstDate,

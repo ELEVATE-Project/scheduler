@@ -29,17 +29,16 @@ services:
       - elevate_net
     logging:
       driver: none
-  mongo:
-    image: 'mongo:4.4.14'
+  redis:
+    image: 'redis:7.0.0'
+    container_name: redis
     restart: 'always'
+    command: redis-server --appendonly yes --maxmemory-policy noeviction
     ports:
-      - '27017:27017'
+      - '6380:6379'
     networks:
       - elevate_net
-    volumes:
-      - mongo-data:/data/db
-    logging:
-      driver: none
+
   scheduler:
     image: shikshalokamqa/elevate-scheduler:2.2
     ports:
@@ -52,7 +51,7 @@ services:
       - ${env_file}
     depends_on:
       - kafka
-      - mongo
+      - redis
     networks:
       - elevate_net
 networks:
@@ -61,4 +60,3 @@ networks:
 volumes:
   zookeeper-data:
   kafka-data:
-  mongo-data:

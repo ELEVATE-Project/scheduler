@@ -14,7 +14,7 @@ info:
     email: tech-infra@shikshalokam.org
   license:
     name: MIT License
-    url: ttps://github.com/ELEVATE-Project/scheduler/blob/master/LICENSE
+    url: https://github.com/ELEVATE-Project/scheduler/blob/master/LICENSE
   version: '1'
 externalDocs:
   description: ''
@@ -38,9 +38,9 @@ paths:
         delayed jobs, repeatable jobs with a cron pattern, and repeatable jobs
         with an interval. Accepts a JSON request body with specific parameters.
       operationId: /scheduler/jobs/create
-      tags:
+      tags: &ref_0
         - Default
-      parameters: []
+      parameters: &ref_1 []
       requestBody:
         description: Job details
         required: true
@@ -221,7 +221,7 @@ paths:
                       timestamp: 1684856181192
                     meta:
                       correlation: 986c2de2-93a8-4f13-a13f-59501c58d287
-          headers: {}
+          headers: &ref_2 {}
           description: Success response
         '400':
           content:
@@ -441,6 +441,174 @@ paths:
           description: Failure Response
       summary: Get list of jobs
     parameters: []
+  /scheduler/jobs/updateDelay:
+    post:
+      summary: Update delay of created job with id
+      description: >-
+        The Scheduler Service using BullMQ allows you to add jobs to a queue
+        with different scheduling options. It supports three types of jobs:
+        delayed jobs, repeatable jobs with a cron pattern, and repeatable jobs
+        with an interval. Accepts a JSON request body with specific parameters.
+      operationId: /scheduler/jobs/create
+      tags: *ref_0
+      parameters: *ref_1
+      requestBody:
+        description: Job details
+        required: true
+        content:
+          application/json:
+            schema:
+              $schema: http://json-schema.org/draft-04/schema#
+              type: object
+              properties:
+                delay:
+                  type: number
+                id:
+                  type: number
+              required:
+                - delay
+                - id
+            examples:
+              Request Body:
+                value:
+                  delay: 120000
+                  id: 50
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $schema: http://json-schema.org/draft-04/schema#
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  responseCode:
+                    type: number
+                  message:
+                    type: string
+                  result:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      data:
+                        type: object
+                        properties:
+                          email:
+                            type: array
+                            items:
+                              type: string
+                          request:
+                            type: object
+                            properties:
+                              url:
+                                type: string
+                              method:
+                                type: string
+                              header:
+                                type: object
+                                properties:
+                                  internal_access_token:
+                                    type: string
+                      opts:
+                        type: object
+                        properties:
+                          attempts:
+                            type: number
+                          delay:
+                            type: number
+                          removeOnFail:
+                            type: boolean
+                          jobId:
+                            type: string
+                          removeOnComplete:
+                            type: boolean
+                      id:
+                        type: number
+                      progress:
+                        type: number
+                      returnvalue:
+                        type: 'null'
+                      stacktrace:
+                        type: array
+                        items:
+                          type: string
+                      attemptsMade:
+                        type: number
+                      delay:
+                        type: number
+                      timestamp:
+                        type: number
+                  meta:
+                    type: object
+                    properties:
+                      correlation:
+                        type: string
+              examples:
+                Success Response:
+                  value:
+                    success: true
+                    responseCode: 200
+                    message: Job delay updated successfully
+                    result:
+                      name: emailCronJobBeforeOneHour
+                      data:
+                        email:
+                          - nevil@tunerlabs.com
+                        request:
+                          url: >-
+                            http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour
+                          method: get
+                          header:
+                            internal_access_token: internal_access_etoken
+                      opts:
+                        attempts: 1
+                        delay: 15000
+                        removeOnFail: false
+                        jobId: '50'
+                        removeOnComplete: false
+                      id: 50
+                      progress: 0
+                      returnvalue: null
+                      stacktrace: []
+                      attemptsMade: 0
+                      delay: 120000
+                      timestamp: 1695813193081
+                    meta:
+                      correlation: a2bcaf3d-6010-42ba-a3e4-cf02d7138847
+          headers: *ref_2
+          description: Success response
+        '404':
+          content:
+            application/json:
+              schema:
+                $schema: http://json-schema.org/draft-04/schema#
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  error:
+                    type: array
+                    items:
+                      type: string
+                  meta:
+                    type: object
+                    properties:
+                      correlation:
+                        type: string
+              examples:
+                Error response:
+                  value:
+                    success: false
+                    message: No job found with the specified ID
+                    error: []
+                    meta:
+                      correlation: 05c71907-f34b-4f4a-a8ab-6224ea340ed8
+          description: Failure Response
+      deprecated: false
 components:
   schemas:
     create-schema:

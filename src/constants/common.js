@@ -31,9 +31,4 @@ const failureResponse = ({ message, success = false, status = 500 }) => {
 module.exports = {
 	successResponse,
 	failureResponse,
-	ONCE: 'once',
-	NOW: 'now',
-	EVERY: 'every',
-	SUCCESS: 'success',
-	FAILED: 'failed',
 }

@@ -1,0 +1,356 @@
+{
+	"info": {
+		"_postman_id": "a9e2eeae-f3d1-470e-98aa-599c4cc28f8a",
+		"name": "MentorED-Scheduler",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21498549"
+	},
+	"item": [
+		{
+			"name": "create",
+			"item": [
+				{
+					"name": "Create Repetable  job(cron)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}"
+							},
+							{
+								"key": "X-authenticated-user-token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6ImFjY2Vzc3YxX2tleTEifQ.eyJhdWQiOiJodHRwczovL3N0YWdpbmcuc3VuYmlyZGVkLm9yZy9hdXRoL3JlYWxtcy9zdW5iaXJkIiwic3ViIjoiZjo5Nzk3MzhiNy0yNTNjLTRhZGYtOTY3My1hODU3ZWViODYxMTU6YjM2NDk3MTMtY2ZjZS00YTg5LTgzZGMtN2IxOTczMGE2ZWU4Iiwicm9sZXMiOlt7InJvbGUiOiJQVUJMSUMiLCJzY29wZSI6W119XSwiaXNzIjoiaHR0cHM6Ly9zdGFnaW5nLnN1bmJpcmRlZC5vcmcvYXV0aC9yZWFsbXMvc3VuYmlyZCIsInR5cCI6IkJlYXJlciIsImV4cCI6MTYzODYwMTk2OCwiaWF0IjoxNjM4NTE1NTY4fQ.XmgALjwk9XxAAg6DZL4Nh_OF5cOAxdqMRmhyunLOxfDufpvenszW2JG1i05p83m-EVDPCkmewwtMmqJZETdn1VAMluYcNw2Hwl4qPVyoKEJaupYH7EKJmDCvQcnRNQ21hiD5AEYd990XCp1YPoZTL_W9G9JgmuW9anR6wINJzMXaxwAAbNPfJNzcsGbhDxWnAqsbhVOTWS74eOVDde-jkMZd0oM_Mq75DVf-lQmvnjJTcpm8yGhlB8EyqwanbV21FbiZmGlkhFY43iHT6i82X-fE_58PA2OWtnjYImLJaD1oB2THSCj4a0B12PEYwjRuaTl_KkmrCfmRDFWFw2ZHXg",
+								"disabled": true
+							},
+							{
+								"key": "X-Channel-id",
+								"value": "0125747659358699520"
+							},
+							{
+								"key": "gpsLocation",
+								"value": "{{gpsLocation}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jobName\": \"emailCronJobBeforeOneHour\",\n    \"email\": [\n        \"nevil@tunerlabs.com\"\n    ],\n    \"request\": {\n        \"url\": \"http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour\",\n        \"method\": \"get\",\n        \"header\": {\n            \"internal_access_token\": \"internal_access_token\"\n        }\n    },\n    \"jobOptions\": {\n        \"jobId\": \"emailCronJobBeforeOneHour\",\n        \"repeat\": {\n            \"pattern\": \"15 3 * * *\"\n        },\n        \"removeOnComplete\": 100,\n        \"removeOnFail\": 200,\n        \"attempts\": 3\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/scheduler/jobs/create",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["scheduler", "jobs", "create"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Job delay",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var value = pm.environment.get(\"var\");",
+									"",
+									"if( !value) {",
+									"    pm.environment.set(\"var\", 1);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let value = pm.environment.get(\"var\");",
+									"",
+									"pm.environment.set(\"var\", Number(value)+1);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}"
+							},
+							{
+								"key": "X-authenticated-user-token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6ImFjY2Vzc3YxX2tleTEifQ.eyJhdWQiOiJodHRwczovL3N0YWdpbmcuc3VuYmlyZGVkLm9yZy9hdXRoL3JlYWxtcy9zdW5iaXJkIiwic3ViIjoiZjo5Nzk3MzhiNy0yNTNjLTRhZGYtOTY3My1hODU3ZWViODYxMTU6YjM2NDk3MTMtY2ZjZS00YTg5LTgzZGMtN2IxOTczMGE2ZWU4Iiwicm9sZXMiOlt7InJvbGUiOiJQVUJMSUMiLCJzY29wZSI6W119XSwiaXNzIjoiaHR0cHM6Ly9zdGFnaW5nLnN1bmJpcmRlZC5vcmcvYXV0aC9yZWFsbXMvc3VuYmlyZCIsInR5cCI6IkJlYXJlciIsImV4cCI6MTYzODYwMTk2OCwiaWF0IjoxNjM4NTE1NTY4fQ.XmgALjwk9XxAAg6DZL4Nh_OF5cOAxdqMRmhyunLOxfDufpvenszW2JG1i05p83m-EVDPCkmewwtMmqJZETdn1VAMluYcNw2Hwl4qPVyoKEJaupYH7EKJmDCvQcnRNQ21hiD5AEYd990XCp1YPoZTL_W9G9JgmuW9anR6wINJzMXaxwAAbNPfJNzcsGbhDxWnAqsbhVOTWS74eOVDde-jkMZd0oM_Mq75DVf-lQmvnjJTcpm8yGhlB8EyqwanbV21FbiZmGlkhFY43iHT6i82X-fE_58PA2OWtnjYImLJaD1oB2THSCj4a0B12PEYwjRuaTl_KkmrCfmRDFWFw2ZHXg"
+							},
+							{
+								"key": "X-Channel-id",
+								"value": "0125747659358699520"
+							},
+							{
+								"key": "gpsLocation",
+								"value": "{{gpsLocation}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jobName\": \"emailCronJobBeforeOneHour\",\n    \"email\": [\n        \"nevil@tunerlabs.com\"\n    ],\n    \"request\": {\n        \"url\": \"http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour\",\n        \"method\": \"get\",\n        \"header\": {\n            \"internal_access_token\": \"internal_access_etoken\"\n        }\n    },\n    \"jobOptions\": {\n        \"jobId\": \"{{var}}\",\n        \"delay\": 15000,\n        \"removeOnComplete\": false,\n        \"removeOnFail\": false,\n        \"attempts\": 1\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/scheduler/jobs/create",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["scheduler", "jobs", "create"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Repetable  job(interval)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jobName\": \"emailCronJobBeforeOneHour\",\n    \"email\": [\n        \"nevil@tunerlabs.com\"\n    ],\n    \"request\": {\n        \"url\": \"http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour\",\n        \"method\": \"get\",\n        \"header\": {\n            \"internal_access_token\": \"internal_access_token\"\n        }\n    },\n    \"jobOptions\": {\n        \"jobId\": \"emailCronJobBeforeOneHour\",\n        \"repeat\": {\n            \"every\": 100,\n            \"limit\": 250\n        },\n        \"removeOnComplete\": 50,\n        \"removeOnFail\": 200,\n        \"attempts\": 3\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/scheduler/jobs/create",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["scheduler", "jobs", "create"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "purge",
+			"item": [
+				{
+					"name": "Clean",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"method\": \"clean\",\n    \"options\": {\n        \"gracePeriod\": 60,\n        \"limit\": 0,\n        \"jobStatus\": \"failed\"\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/scheduler/jobs/purge",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["scheduler", "jobs", "purge"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "drain",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"method\": \"drain\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/scheduler/jobs/purge",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["scheduler", "jobs", "purge"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obliterate",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"method\": \"obliterate\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/scheduler/jobs/purge",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["scheduler", "jobs", "purge"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Remove job",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"jobId\": \"emailCronJobBeforeOneHour\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:4000/scheduler/jobs/remove",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "4000",
+					"path": ["scheduler", "jobs", "remove"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:4000/scheduler/jobs/list?filter=completed,failed,delayed,active,wait,paused,repeat",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "4000",
+					"path": ["scheduler", "jobs", "list"],
+					"query": [
+						{
+							"key": "filter",
+							"value": "completed,failed,delayed,active,wait,paused,repeat"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Job Delay",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var value = pm.environment.get(\"var\");",
+							"",
+							"if( !value) {",
+							"    pm.environment.set(\"var\", 1);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let value = pm.environment.get(\"var\");",
+							"",
+							"pm.environment.set(\"var\", Number(value)+1);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "bearer {{token}}"
+					},
+					{
+						"key": "X-authenticated-user-token",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6ImFjY2Vzc3YxX2tleTEifQ.eyJhdWQiOiJodHRwczovL3N0YWdpbmcuc3VuYmlyZGVkLm9yZy9hdXRoL3JlYWxtcy9zdW5iaXJkIiwic3ViIjoiZjo5Nzk3MzhiNy0yNTNjLTRhZGYtOTY3My1hODU3ZWViODYxMTU6YjM2NDk3MTMtY2ZjZS00YTg5LTgzZGMtN2IxOTczMGE2ZWU4Iiwicm9sZXMiOlt7InJvbGUiOiJQVUJMSUMiLCJzY29wZSI6W119XSwiaXNzIjoiaHR0cHM6Ly9zdGFnaW5nLnN1bmJpcmRlZC5vcmcvYXV0aC9yZWFsbXMvc3VuYmlyZCIsInR5cCI6IkJlYXJlciIsImV4cCI6MTYzODYwMTk2OCwiaWF0IjoxNjM4NTE1NTY4fQ.XmgALjwk9XxAAg6DZL4Nh_OF5cOAxdqMRmhyunLOxfDufpvenszW2JG1i05p83m-EVDPCkmewwtMmqJZETdn1VAMluYcNw2Hwl4qPVyoKEJaupYH7EKJmDCvQcnRNQ21hiD5AEYd990XCp1YPoZTL_W9G9JgmuW9anR6wINJzMXaxwAAbNPfJNzcsGbhDxWnAqsbhVOTWS74eOVDde-jkMZd0oM_Mq75DVf-lQmvnjJTcpm8yGhlB8EyqwanbV21FbiZmGlkhFY43iHT6i82X-fE_58PA2OWtnjYImLJaD1oB2THSCj4a0B12PEYwjRuaTl_KkmrCfmRDFWFw2ZHXg"
+					},
+					{
+						"key": "X-Channel-id",
+						"value": "0125747659358699520"
+					},
+					{
+						"key": "gpsLocation",
+						"value": "{{gpsLocation}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"delay\": 120000,\n    \"id\": 47\n}"
+				},
+				"url": {
+					"raw": "http://localhost:4000/scheduler/jobs/updateDelay",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "4000",
+					"path": ["scheduler", "jobs", "updateDelay"]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "randomName",
+			"value": ""
+		},
+		{
+			"key": "variableName",
+			"value": ""
+		}
+	]
+}
