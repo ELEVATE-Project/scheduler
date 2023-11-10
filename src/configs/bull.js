@@ -16,6 +16,7 @@ module.exports = function () {
 				const bodyData = {
 					jobId: job.opts.jobId,
 					emailTemplateCode: job.opts.emailTemplate,
+					jobCreatorOrgId: job.opts.creatorOrgId,
 				}
 				try {
 					needle.request(
