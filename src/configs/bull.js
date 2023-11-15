@@ -13,10 +13,8 @@ module.exports = function () {
 				const options = {
 					headers: job.data.request.header ? job.data.request.header : {},
 				}
-				const bodyData = {
-					jobId: job.opts.jobId,
-					emailTemplateCode: job.opts.emailTemplate,
-				}
+				const bodyData = job.data.request.reqBody ? job.data.request.reqBody : {}
+
 				try {
 					needle.request(
 						job.data.request.method,
