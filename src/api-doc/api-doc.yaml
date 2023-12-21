@@ -1,532 +1,1039 @@
----
-openapi: 3.0.0
+openapi: 3.0.3
 info:
   title: Elevate Scheduler
-  version: 1.0.0
   description: >-
-    - Service to schedule jobs, Based on Agenda npm package. Provide your job REST endpoint and its scheduling is offered as a service. Introduce a job url, name it, give contact name and email id of person related to the job. scheduler will schedule the job for you on specified time and if any error occurs details will be shared to the specified email id.
-
+    This is a Job Scheduling Service based on the BullMQ library. With the power
+    of BullMQ, this service provides a robust and scalable solution for handling
+    job queues and scheduling tasks. The Job Scheduling Service enables them to
+    streamline their workflow by automating recurring tasks, background
+    processing, and asynchronous job execution. It empowers administrators, and
+    developers to define and manage complex job scheduling requirements with
+    ease.
+  termsOfService: ''
   contact:
     email: tech-infra@shikshalokam.org
+  license:
+    name: MIT License
+    url: https://github.com/ELEVATE-Project/scheduler/blob/master/LICENSE
+  version: '1'
+externalDocs:
+  description: ''
+  url: ''
 servers:
-  - url: http://localhost:4000
-    description: local server
-  - url: https://dev.elevate-apis.shikshalokam.org
-    description: dev server
+  - url: http://127.0.0.1:4000
+    description: Localhost
+tags:
+  - name: Default
+    description: ''
+    externalDocs:
+      description: ''
+      url: ''
 paths:
-  'scheduler/jobs/list':
-    get:
-      summary: List scheduled job details
-      tags:
-        - Job APIs
-      description: "Get list of scheduled jobs.  \n -
-        The API Endpoint for listing scheduled jobs is `scheduler/jobs/list` \n - It is mandatory to
-        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
-        and cannot be empty or null."
-      responses:
-        '200':
-          description: ok
-          content:
-            application.json:
-              schema:
-                '$ref': '#/components/schemas/jobs/jobList200Response'
-        '400':
-          description: Bad Request
-          content:
-            application.json:
-              schema:
-                '$ref': '#/components/schemas/jobs/jobList400Response'
-  'scheduler/jobs/create':
+  /scheduler/jobs/create:
     post:
-      summary: Create job
-      tags:
-        - Job APIs
-      description: "Add new job definition. And schedule it.  \n -
-        The API Endpoint for creating a definition is `scheduler/jobs/create` \n - It is mandatory to
-        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
-        and cannot be empty or null."
+      summary: Create repeatable jobs
+      description: >-
+        The Scheduler Service using BullMQ allows you to add jobs to a queue
+        with different scheduling options. It supports three types of jobs:
+        delayed jobs, repeatable jobs with a cron pattern, and repeatable jobs
+        with an interval. Accepts a JSON request body with specific parameters.
+      operationId: /scheduler/jobs/create
+      tags: &ref_0
+        - Default
+      parameters: &ref_1 []
       requestBody:
+        description: Job details
         required: true
         content:
-          application.json:
+          application/json:
             schema:
-              '$ref': '#/components/schemas/jobs/createJobRequest'
+              $ref: '#/components/schemas/create-schema'
+            examples:
+              Create delayed jobs:
+                value:
+                  jobName: emailCronJobBeforeOneHour
+                  email:
+                    - nevil@tunerlabs.com
+                  request:
+                    url: >-
+                      http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour
+                    method: get
+                    header:
+                      internal_access_token: internal_access_token
+                  jobOptions:
+                    jobId: emailCronJobBeforeOneHour
+                    delay: 500000
+                    removeOnComplete: true
+                    removeOnFail: false
+                    attempts: 1
+              Create repeatable jobs with interval:
+                value:
+                  jobName: emailCronJobBeforeOneHour
+                  email:
+                    - nevil@tunerlabs.com
+                  request:
+                    url: >-
+                      http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour
+                    method: get
+                    header:
+                      internal_access_token: internal_access_token
+                  jobOptions:
+                    jobId: emailCronJobBeforeOneHour
+                    repeat:
+                      every: 100
+                      limit: 250
+                    removeOnComplete: 50
+                    removeOnFail: 200
+                    attempts: 3
+              Create repeatable jobs with cron:
+                value:
+                  jobName: emailCronJobBeforeOneHour
+                  email:
+                    - nevil@tunerlabs.com
+                  request:
+                    url: >-
+                      http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour
+                    method: get
+                    header:
+                      internal_access_token: internal_access_token
+                  jobOptions:
+                    jobId: emailCronJobBeforeOneHour
+                    repeat:
+                      pattern: 15 3 * * *
+                    removeOnComplete: 100
+                    removeOnFail: 200
+                    attempts: 3
       responses:
         '200':
-          description: ok
           content:
-            application.json:
+            application/json:
               schema:
-                '$ref': '#/components/schemas/jobs/createJob200Response'
+                $ref: '#/components/schemas/create-response-schema'
+              examples:
+                ' Delayed job response':
+                  value:
+                    success: true
+                    responseCode: 200
+                    message: Job queued successfully
+                    result:
+                      name: emailCronJobBeforeOneHour
+                      data:
+                        email:
+                          - nevil@tunerlabs.com
+                        request:
+                          url: >-
+                            http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour
+                          method: get
+                          header:
+                            internal_access_token: internal_access_token
+                      opts:
+                        attempts: 1
+                        delay: 500000
+                        jobId: emailCronJobBeforeOneHour
+                        removeOnComplete: true
+                        removeOnFail: false
+                      id: emailCronJobBeforeOneHour
+                      progress: 0
+                      returnvalue: null
+                      stacktrace: null
+                      attemptsMade: 0
+                      delay: 500000
+                      timestamp: 1684836046766
+                    meta:
+                      correlation: cf4ff717-258a-477e-acb3-4f2bbaa969b9
+                ' Repetable job response(interval)':
+                  value:
+                    success: true
+                    responseCode: 200
+                    message: Job queued successfully
+                    result:
+                      name: emailCronJobBeforeOneHour
+                      data:
+                        email:
+                          - nevil@tunerlabs.com
+                        request:
+                          url: >-
+                            http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour
+                          method: get
+                          header:
+                            internal_access_token: internal_access_token
+                      opts:
+                        attempts: 3
+                        delay: 28
+                        jobId: repeat:21726a02ac95e12429d76fa2bc4be622:1684856243000
+                        repeat:
+                          every: 100
+                          limit: 250
+                          jobId: emailCronJobBeforeOneHour
+                          count: 1
+                        removeOnComplete: 50
+                        removeOnFail: 200
+                        timestamp: 1684856242972
+                        prevMillis: 1684856243000
+                      id: repeat:21726a02ac95e12429d76fa2bc4be622:1684856243000
+                      progress: 0
+                      returnvalue: null
+                      stacktrace: null
+                      attemptsMade: 0
+                      delay: 28
+                      repeatJobKey: >-
+                        emailCronJobBeforeOneHour:emailCronJobBeforeOneHour:::100
+                      timestamp: 1684856242972
+                    meta:
+                      correlation: 1b40e9b7-91ce-40ae-80ba-735e5b34d46e
+                ' Delayed job response(cron)':
+                  value:
+                    success: true
+                    responseCode: 200
+                    message: Job queued successfully
+                    result:
+                      name: emailCronJobBeforeOneHour
+                      data:
+                        email:
+                          - nevil@tunerlabs.com
+                        request:
+                          url: >-
+                            http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour
+                          method: get
+                          header:
+                            internal_access_token: internal_access_token
+                      opts:
+                        attempts: 3
+                        delay: 41918808
+                        jobId: repeat:f17f9ebd8e9a8b916c55a57a567aadaa:1684898100000
+                        repeat:
+                          pattern: 15 3 * * *
+                          jobId: emailCronJobBeforeOneHour
+                          count: 1
+                        removeOnComplete: 100
+                        removeOnFail: 200
+                        timestamp: 1684856181192
+                        prevMillis: 1684898100000
+                      id: repeat:f17f9ebd8e9a8b916c55a57a567aadaa:1684898100000
+                      progress: 0
+                      returnvalue: null
+                      stacktrace: null
+                      attemptsMade: 0
+                      delay: 41918808
+                      repeatJobKey: >-
+                        emailCronJobBeforeOneHour:emailCronJobBeforeOneHour:::15
+                        3 * * *
+                      timestamp: 1684856181192
+                    meta:
+                      correlation: 986c2de2-93a8-4f13-a13f-59501c58d287
+          headers: &ref_2 {}
+          description: Success response
         '400':
-          description: Bad Request
           content:
-            application.json:
+            application/json:
               schema:
-                '$ref': '#/components/schemas/jobs/createJob400Response'
-  'scheduler/jobs/run':
+                $ref: '#/components/schemas/create-response-failure-schema'
+              examples:
+                Error response:
+                  value:
+                    success: false
+                    message: A job already exists with the same ID
+                    error: []
+                    meta:
+                      correlation: 1f76fd28-a861-4b2c-86d6-be8c4c70de0f
+          description: Failure Response
+      deprecated: false
+  /scheduler/jobs/remove:
     post:
-      summary: Schedule job for immediate exicution
+      summary: Remove a single job from the scheduler queue
+      description: >-
+        It is used to remove a single job from the scheduler queue. The request
+        body contains a JSON object with the jobId property, representing the
+        unique identifier of the job to be removed.
+      operationId: /scheduler/jobs/remove
       tags:
-        - Job APIs
-      description: "Schedule immediate job.  \n -
-        The API Endpoint for scheduling immediate job is `scheduler/jobs/run` \n - It is mandatory to
-        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
-        and cannot be empty or null."
+        - Default
+      parameters: []
       requestBody:
-        required: true
         content:
-          application.json:
+          application/json:
             schema:
-              '$ref': '#/components/schemas/jobs/jobNowRequest'
+              $ref: '#/components/schemas/remove-job-schema'
+            examples:
+              Request body:
+                value:
+                  jobId: emailCronJobBeforeOneHour
       responses:
         '200':
-          description: ok
           content:
-            application.json:
+            application/json:
               schema:
-                '$ref': '#/components/schemas/jobs/createJob200Response'
+                $ref: '#/components/schemas/remove-job-response-success-schema'
+              examples:
+                Response:
+                  value:
+                    success: true
+                    responseCode: 200
+                    message: Job successfully removed
+                    result: true
+                    meta:
+                      correlation: 73c06d73-8fb1-487f-b073-992233231bd6
+          description: Success response
         '400':
-          description: Bad Request
           content:
-            application.json:
+            application/json:
               schema:
-                '$ref': '#/components/schemas/jobs/createJob400Response'
-  'scheduler/jobs/every':
+                $ref: '#/components/schemas/remove-job-response-failure-schema'
+              examples:
+                Failure response:
+                  value:
+                    success: false
+                    message: No job found with the specified ID
+                    error: []
+                    meta:
+                      correlation: e08c248a-fbee-459f-b41a-97018663a51d
+          description: Response when job not found
+  /scheduler/jobs/purge:
     post:
-      summary: Schedule job for repeatative intervals
-      tags:
-        - Job APIs
-      description: "Schedule repeatative job.  \n -
-        The API Endpoint for scheduling repeatative job is `scheduler/jobs/every` \n - It is mandatory to
-        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
-        and cannot be empty or null."
-      requestBody:
-        required: true
-        content:
-          application.json:
-            schema:
-              '$ref': '#/components/schemas/jobs/jobOnceAndEveryRequest'
-      responses:
-        '200':
-          description: ok
-          content:
-            application.json:
-              schema:
-                '$ref': '#/components/schemas/jobs/createJob200Response'
-        '400':
-          description: Bad Request
-          content:
-            application.json:
-              schema:
-                '$ref': '#/components/schemas/jobs/createJob400Response'
-  'scheduler/jobs/once':
-    post:
-      summary: Schedule job to exicute on specified time at once
-      tags:
-        - Job APIs
-      description: "Schedule one time job.  \n -
-        The API Endpoint for scheduling one time job is `scheduler/jobs/once` \n - It is mandatory to
-        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
-        and cannot be empty or null."
-      requestBody:
-        required: true
-        content:
-          application.json:
-            schema:
-              '$ref': '#/components/schemas/jobs/jobOnceAndEveryRequest'
-      responses:
-        '200':
-          description: ok
-          content:
-            application.json:
-              schema:
-                '$ref': '#/components/schemas/jobs/createJob200Response'
-        '400':
-          description: Bad Request
-          content:
-            application.json:
-              schema:
-                '$ref': '#/components/schemas/jobs/createJob400Response'
-  'scheduler/jobs/cancel':
-    post:
-      summary: Cancel specified job instance
-      tags:
-        - Job APIs
-      description: "Cancel job instance.  \n -
-        The API Endpoint for cancel a job instance is `scheduler/jobs/cancel` \n - It is mandatory to
-        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
-        and cannot be empty or null."
-      requestBody:
-        required: true
-        content:
-          application.json:
-            schema:
-              '$ref': '#/components/schemas/jobs/cancelRequest'
-      responses:
-        '200':
-          description: ok
-          content:
-            application.json:
-              schema:
-                '$ref': '#/components/schemas/jobs/cancelJob200Response'
-        '400':
-          description: Bad Request
-          content:
-            application.json:
-              schema:
-                '$ref': '#/components/schemas/jobs/cancelJob400Response'
-  'scheduler/jobs/update':
-    put:
-      summary: Update specified job definition
-      tags:
-        - Job APIs
-      description: "Update job definition.  \n -
-        The API Endpoint for update a job defenition is `scheduler/jobs/update` \n - It is mandatory to
-        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
-        and cannot be empty or null."
-      requestBody:
-        required: true
-        content:
-          application.json:
-            schema:
-              '$ref': '#/components/schemas/jobs/updateJobRequest'
-      responses:
-        '200':
-          description: ok
-          content:
-            application.json:
-              schema:
-                '$ref': '#/components/schemas/jobs/updateJob200Response'
-        '400':
-          description: Bad Request
-          content:
-            application.json:
-              schema:
-                '$ref': '#/components/schemas/jobs/updateJob400Response'
-  'scheduler/jobs/delete':
-    delete:
-      summary: Delete specified job definition and it's instances
-      tags:
-        - Job APIs
-      description: "Update job definition.  \n -
-        The API Endpoint for delete specified job definition and it's instances is `scheduler/jobs/delete` \n - It is mandatory to
-        provide values for parameters which are marked as `required` \n - This is a mandatory parameter
-        and cannot be empty or null."
-      requestBody:
-        required: true
-        content:
-          application.json:
-            schema:
-              '$ref': '#/components/schemas/jobs/deleteRequest'
-      responses:
-        '200':
-          description: ok
-          content:
-            application.json:
-              schema:
-                '$ref': '#/components/schemas/jobs/deleteJob200Response'
-        '400':
-          description: Bad Request
-          content:
-            application.json:
-              schema:
-                '$ref': '#/components/schemas/jobs/deleteJob400Response'
+      summary: Purge jobs/queue
+      description: >-
+        Purge jobs/queue using different methods (clean, drain, obliterate).
+        Accepts a JSON request body with the method and options parameters.
 
+        Note: "options" parameter is only needed for the clean method.
+      operationId: /scheduler/jobs/purge
+      tags:
+        - Default
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/purge-schema'
+            examples:
+              Clean method:
+                value:
+                  method: clean
+                  options:
+                    gracePeriod: 10000
+                    limit: 100
+                    jobStatus: completed
+              Drain method:
+                value:
+                  method: drain
+              Obliterate method:
+                value:
+                  method: obliterate
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/purge-success-response-schema'
+              examples:
+                Clean method:
+                  value:
+                    success: true
+                    responseCode: 200
+                    message: Jobs cleaned successfully
+                    result: {}
+                    meta:
+                      correlation: b55ee699-981b-48b8-84f0-93a118daaaa8
+                Drain method:
+                  value:
+                    success: true
+                    responseCode: 200
+                    message: Queue drained successfully
+                    result: {}
+                    meta:
+                      correlation: 495edbc7-9c80-4d32-b9db-6b0b57f52ba5
+                Obliterate method:
+                  value:
+                    success: true
+                    responseCode: 200
+                    message: Queue obliterated successfully
+                    result: {}
+                    meta:
+                      correlation: fe7d4a8f-76f0-436a-9f9b-e118a89c346f
+          description: Success Response
+        '400':
+          description: Failure Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/purge-failure-schema'
+              examples:
+                example1:
+                  value:
+                    success: false
+                    message: Unable to purge the queue
+                    error: []
+                    meta:
+                      correlation: 758680ac-06cd-4d45-a7ec-eddad54356a0
+  /scheduler/jobs/list:
+    get:
+      description: Get a list of jobs from the scheduler
+      operationId: /scheduler/jobs/list
+      tags:
+        - Default
+      parameters:
+        - in: query
+          name: filter
+          description: ''
+          schema:
+            type: string
+            enum:
+              - completed
+              - failed
+              - delayed
+              - active
+              - wait
+              - paused
+              - repeat
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-response-schema'
+              examples:
+                Response:
+                  value:
+                    success: true
+                    responseCode: 200
+                    message: Job list successfully retrieved
+                    result:
+                      - name: emailCronJobBeforeOneHour
+                        opts:
+                          attempts: 3
+                          delay: 62343133
+                          prevMillis: 1684898100000
+                          timestamp: 1684835756867
+                          removeOnFail: 200
+                          removeOnComplete: 100
+                          jobId: >-
+                            repeat:f17f9ebd8e9a8b916c55a57a567aadaa:1684898100000
+                          repeat:
+                            jobId: emailCronJobBeforeOneHour
+                            pattern: 15 3 * * *
+                            count: 1
+                        id: repeat:f17f9ebd8e9a8b916c55a57a567aadaa:1684898100000
+                        progress: 0
+                        returnvalue: 'null'
+                        stacktrace: []
+                        attemptsMade: 0
+                        delay: 62343133
+                        repeatJobKey: >-
+                          emailCronJobBeforeOneHour:emailCronJobBeforeOneHour:::15
+                          3 * * *
+                        timestamp: 1684835756867
+                    meta:
+                      correlation: 8dec3a0b-1622-4d11-9071-4434c126b598
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-fail-schema'
+              examples:
+                Failure Response:
+                  value:
+                    success: false
+                    message: No jobs found
+                    error: []
+                    meta:
+                      correlation: 758680ac-06cd-4d45-a7ec-eddad54356a0
+          description: Failure Response
+      summary: Get list of jobs
+    parameters: []
+  /scheduler/jobs/updateDelay:
+    post:
+      summary: Update delay of created job with id
+      description: >-
+        The Scheduler Service using BullMQ allows you to add jobs to a queue
+        with different scheduling options. It supports three types of jobs:
+        delayed jobs, repeatable jobs with a cron pattern, and repeatable jobs
+        with an interval. Accepts a JSON request body with specific parameters.
+      operationId: /scheduler/jobs/create
+      tags: *ref_0
+      parameters: *ref_1
+      requestBody:
+        description: Job details
+        required: true
+        content:
+          application/json:
+            schema:
+              $schema: http://json-schema.org/draft-04/schema#
+              type: object
+              properties:
+                delay:
+                  type: number
+                id:
+                  type: number
+              required:
+                - delay
+                - id
+            examples:
+              Request Body:
+                value:
+                  delay: 120000
+                  id: 50
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $schema: http://json-schema.org/draft-04/schema#
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  responseCode:
+                    type: number
+                  message:
+                    type: string
+                  result:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      data:
+                        type: object
+                        properties:
+                          email:
+                            type: array
+                            items:
+                              type: string
+                          request:
+                            type: object
+                            properties:
+                              url:
+                                type: string
+                              method:
+                                type: string
+                              header:
+                                type: object
+                                properties:
+                                  internal_access_token:
+                                    type: string
+                      opts:
+                        type: object
+                        properties:
+                          attempts:
+                            type: number
+                          delay:
+                            type: number
+                          removeOnFail:
+                            type: boolean
+                          jobId:
+                            type: string
+                          removeOnComplete:
+                            type: boolean
+                      id:
+                        type: number
+                      progress:
+                        type: number
+                      returnvalue:
+                        type: 'null'
+                      stacktrace:
+                        type: array
+                        items:
+                          type: string
+                      attemptsMade:
+                        type: number
+                      delay:
+                        type: number
+                      timestamp:
+                        type: number
+                  meta:
+                    type: object
+                    properties:
+                      correlation:
+                        type: string
+              examples:
+                Success Response:
+                  value:
+                    success: true
+                    responseCode: 200
+                    message: Job delay updated successfully
+                    result:
+                      name: emailCronJobBeforeOneHour
+                      data:
+                        email:
+                          - nevil@tunerlabs.com
+                        request:
+                          url: >-
+                            http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour
+                          method: get
+                          header:
+                            internal_access_token: internal_access_etoken
+                      opts:
+                        attempts: 1
+                        delay: 15000
+                        removeOnFail: false
+                        jobId: '50'
+                        removeOnComplete: false
+                      id: 50
+                      progress: 0
+                      returnvalue: null
+                      stacktrace: []
+                      attemptsMade: 0
+                      delay: 120000
+                      timestamp: 1695813193081
+                    meta:
+                      correlation: a2bcaf3d-6010-42ba-a3e4-cf02d7138847
+          headers: *ref_2
+          description: Success response
+        '404':
+          content:
+            application/json:
+              schema:
+                $schema: http://json-schema.org/draft-04/schema#
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  error:
+                    type: array
+                    items:
+                      type: string
+                  meta:
+                    type: object
+                    properties:
+                      correlation:
+                        type: string
+              examples:
+                Error response:
+                  value:
+                    success: false
+                    message: No job found with the specified ID
+                    error: []
+                    meta:
+                      correlation: 05c71907-f34b-4f4a-a8ab-6224ea340ed8
+          description: Failure Response
+      deprecated: false
 components:
   schemas:
-    jobs:
-      createJobRequest:
-        type: object
-        required:
-          - name
-          - email
-          - request
-          - schedule
-        properties:
-          name:
+    create-schema:
+      type: object
+      properties:
+        jobName:
+          type: string
+          description: Name of the job to be executed
+        email:
+          type: array
+          items:
             type: string
-            example: jobname
-          email:
-            type: array
-            items:
+          description: ' Email addresses associated with the job to report job failure'
+        request:
+          type: object
+          properties:
+            url:
               type: string
-              example: schedulersupport@gmail.com
-          request:
-            type: object
-            properties:
-              url:
-                type: string
-                example: http://localhost:3000/mentoring/v1/notifications/cronJobBeforeOneHour
-              method:
-                type: string
-                example: get
-              header:
-                type: object
-                properties:
-                  internal_access_token:
-                    type: string
-                    example: asdgbsd891237bzus81923ziu3y1283ziu318237a
-          schedule:
-            type: object
-            properties:
-              scheduleType:
-                type: string
-                example: once
-              interval:
-                type: string
-                example: 1 minute
-
-      createJob200Response:
-        description: Created
-        type: object
-        properties:
-          success:
-            type: boolean
-            example: true
-          responseCode:
-            type: number
-            example: 200
-          message:
-            type: string
-            example: Successfully scheduled job at given time.
-          result:
-            type: object
-
-      createJob400Response:
-        description: Bad Request.
-        type: object
-        properties:
-          success:
-            type: string
-            example: CLIENT_ERROR
-          message:
-            type: string
-            example: Failed to schedule the job
-          error:
-            type: array
-            items:
+              description: URL for the HTTP request
+            method:
+              type: string
+              enum:
+                - get
+                - post
+                - put
+                - delete
+              description: HTTP method for the request
+            header:
               type: object
-      jobNowRequest:
-        type: object
-        required:
-          - name
-        properties:
-          name:
-            type: string
-            example: emailCronJob
-      jobOnceAndEveryRequest:
-        type: object
-        required:
-          - name
-          - interval
-        properties:
-          name:
-            type: string
-            example: emailCronJob
-          interval:
-            type: string
-            example: five minute
-      jobList200Response:
-        description: Created
-        type: object
-        properties:
-          success:
-            type: boolean
-            example: true
-          responseCode:
-            type: number
-            example: 200
-          message:
-            type: string
-            example: Sucessfully fetched job list
-          result:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
+              properties:
+                internal_access_token:
+                  type: string
+              required:
+                - internal_access_token
+              description: Headers for the request
+          required:
+            - url
+            - method
+            - header
+          description: Details about the HTTP request to be made when the job is processed
+        jobOptions:
+          oneOf:
+            - $ref: '#/components/schemas/delay'
+            - $ref: '#/components/schemas/repeat'
+      required:
+        - jobName
+        - email
+        - request
+        - jobOptions
+      description: Additional options for the job
+    create-response-schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        responseCode:
+          type: number
+        message:
+          type: string
+        result:
+          type: object
+          properties:
+            name:
+              type: string
+            data:
+              type: object
+              properties:
+                email:
+                  type: array
+                  items:
+                    type: string
+                request:
                   type: object
                   properties:
-                    _id:
+                    url:
                       type: string
-                      example: 62c2d57cd3e20f34a110056c
-                    name:
+                    method:
                       type: string
-                      example: jobname
-                    email:
-                      type: array
-                      items:
-                        type: string
-                        example: schedulersupport@gmail.com
-                    request:
+                    header:
                       type: object
                       properties:
-                        url:
+                        internal_access_token:
                           type: string
-                          example: http://localhost:3000/mentoring/v1/notifications/cronJobBeforeOneHour
-                        method:
-                          type: string
-                          example: get
-                        header:
-                          type: object
-                          properties:
-                            internal_access_token:
-                              type: string
-                              example: asdgbsd891237bzus81923ziu3y1283ziu318237a
-      jobList400Response:
-        description: Bad Request.
-        type: object
-        properties:
-          success:
-            type: string
-            example: CLIENT_ERROR
-          message:
-            type: string
-            example: Job list fetching failed
-          error:
-            type: array
-            items:
+            opts:
               type: object
-      cancelRequest:
-        type: object
-        required:
-          - name
-        properties:
-          name:
-            type: string
-            example: emailCronJob
-      cancelJob200Response:
-        description: Created
-        type: object
-        properties:
-          success:
-            type: boolean
-            example: true
-          responseCode:
-            type: number
-            example: 200
-          message:
-            type: string
-            example: 4- job instance cancelled
-          result:
-            type: object
-
-      cancelJob400Response:
-        description: Bad Request.
-        type: object
-        properties:
-          success:
-            type: string
-            example: CLIENT_ERROR
-          message:
-            type: string
-            example: No job instance exist in specified job name
-          error:
-            type: array
-            items:
-              type: object
-      updateJobRequest:
-        type: object
-        required:
-          - name
-          - email
-          - request
-        properties:
-          name:
-            type: string
-            example: jobname
-          email:
-            type: array
-            items:
+              properties:
+                attempts:
+                  type: number
+                delay:
+                  type: number
+                jobId:
+                  type: string
+                removeOnComplete:
+                  type: boolean
+                removeOnFail:
+                  type: boolean
+            id:
               type: string
-              example: schedulersupport@gmail.com
-          request:
+            progress:
+              type: number
+            returnvalue:
+              type: string
+            stacktrace:
+              type: string
+            attemptsMade:
+              type: number
+            delay:
+              type: number
+            timestamp:
+              type: number
+        meta:
+          type: object
+          properties:
+            correlation:
+              type: string
+    remove-job-schema:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: Unique identifier of the job to be removed
+      required:
+        - jobId
+    remove-job-response-failure-schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        error:
+          type: array
+          items:
+            type: string
+        meta:
+          type: object
+          properties:
+            correlation:
+              type: string
+          required:
+            - correlation
+      required:
+        - meta
+        - success
+        - message
+        - error
+    remove-job-response-success-schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        responseCode:
+          type: number
+        message:
+          type: string
+        result:
+          type: boolean
+        meta:
+          type: object
+          properties:
+            correlation:
+              type: string
+          required:
+            - correlation
+      required:
+        - success
+        - responseCode
+        - message
+        - result
+        - meta
+    purge-success-response-schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        responseCode:
+          type: number
+        message:
+          type: string
+        result:
+          type: object
+        meta:
+          type: object
+          properties:
+            correlation:
+              type: string
+      description: Request Response
+    purge-schema:
+      type: object
+      properties:
+        method:
+          type: string
+          enum:
+            - clean
+            - drain
+            - obliterate
+          description: BullMQ method for purging jobs
+        options:
+          oneOf:
+            - $ref: '#/components/schemas/CleanOptions'
+            - $ref: '#/components/schemas/DrainOrObliterateOptions'
+          description: Options specific to the selected purging method
+      required:
+        - method
+    CleanOptions:
+      type: object
+      properties:
+        gracePeriod:
+          type: integer
+          description: Time in milliseconds for grace period
+        limit:
+          type: integer
+          description: Maximum number of jobs to remove,0 to remove all
+        jobStatus:
+          type: string
+          enum:
+            - completed
+            - failed
+            - active
+            - delayed
+            - waiting
+          description: Filter jobs based on their status
+      required:
+        - gracePeriod
+        - limit
+        - jobStatus
+    DrainOrObliterateOptions:
+      type: object
+      description: No additional options required for the 'drain' or 'obliterate' method
+    create-response-failure-schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        error:
+          type: array
+          items:
+            type: string
+        meta:
+          type: object
+          properties:
+            correlation:
+              type: string
+    list-response-schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        responseCode:
+          type: number
+        message:
+          type: string
+        result:
+          type: array
+          items:
             type: object
             properties:
-              url:
+              name:
                 type: string
-                example: http://localhost:3000/mentoring/v1/notifications/cronJobBeforeOneHour
-              method:
-                type: string
-                example: get
-              header:
+              opts:
                 type: object
                 properties:
-                  internal_access_token:
+                  attempts:
+                    type: number
+                  delay:
+                    type: number
+                  prevMillis:
+                    type: number
+                  timestamp:
+                    type: number
+                  removeOnFail:
+                    type: number
+                  removeOnComplete:
+                    type: number
+                  jobId:
                     type: string
-                    example: asdgbsd891237bzus81923ziu3y1283ziu318237a
-      updateJob200Response:
-        description: Created
-        type: object
-        properties:
-          success:
-            type: boolean
-            example: true
-          responseCode:
-            type: number
-            example: 200
-          message:
+                  repeat:
+                    type: object
+                    properties:
+                      jobId:
+                        type: string
+                      pattern:
+                        type: string
+                      count:
+                        type: number
+              id:
+                type: string
+              progress:
+                type: number
+              returnvalue:
+                type: string
+              stacktrace:
+                type: array
+                items:
+                  type: string
+              attemptsMade:
+                type: number
+              delay:
+                type: number
+              repeatJobKey:
+                type: string
+              timestamp:
+                type: number
+        meta:
+          type: object
+          properties:
+            correlation:
+              type: string
+    IntervalRepeat:
+      type: object
+      properties:
+        every:
+          type: integer
+          description: Interval duration in milliseconds between each execution of the job
+        limit:
+          type: integer
+          description: Maximum number of times the job should be repeated (optional)
+      required:
+        - every
+    CronRepeat:
+      type: object
+      properties:
+        pattern:
+          type: string
+          description: Cron pattern specifying the schedule for job execution
+      required:
+        - pattern
+    repeat:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: Unique identifier for the job
+        repeat:
+          oneOf:
+            - $ref: '#/components/schemas/IntervalRepeat'
+            - $ref: '#/components/schemas/CronRepeat'
+          description: Additional options for the job
+        removeOnComplete:
+          type: number
+          description: Number of jobs to keep after completion
+        removeOnFail:
+          type: number
+          description: Number of jobs to keep after failure
+        attempts:
+          type: number
+          description: Number of times the job can be retried if it fails
+      required:
+        - jobId
+        - repeat
+    delay:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: Unique identifier for the job
+        delay:
+          type: number
+          description: Delay in milliseconds before the job is processed
+        removeOnComplete:
+          type: boolean
+          description: >-
+            Whether the job should be removed from the queue when completed
+            successfully
+        removeOnFail:
+          type: boolean
+          description: Whether the job should be removed from the queue if it fails
+        attempts:
+          type: number
+          description: Number of times the job can be retried if it fails
+      required:
+        - delay
+        - jobId
+    list-fail-schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        error:
+          type: array
+          items:
             type: string
-            example: Successfully updated job
-          result:
-            type: object
-
-      updateJob400Response:
-        description: Bad Request.
-        type: object
-        properties:
-          success:
+        meta:
+          type: object
+          properties:
+            correlation:
+              type: string
+    purge-failure-schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        error:
+          type: array
+          items:
             type: string
-            example: CLIENT_ERROR
-          message:
+        meta:
+          type: object
+          properties:
+            correlation:
+              type: string
+    common-400:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: false
+        message:
+          type: string
+          default: Failed to process the request
+        error:
+          type: array
+          items:
             type: string
-            example: Job not found
-          error:
-            type: array
-            items:
-              type: object
-      deleteRequest:
-        type: object
-        required:
-          - jobname
-        properties:
-          jobname:
-            type: string
-            example: emailCronJob
-      deleteJob200Response:
-        description: Created
-        type: object
-        properties:
-          success:
-            type: boolean
-            example: true
-          responseCode:
-            type: number
-            example: 200
-          message:
-            type: string
-            example: Successfully deleted job data
-          result:
-            type: object
-
-      deleteJob400Response:
-        description: Bad Request.
-        type: object
-        properties:
-          success:
-            type: string
-            example: CLIENT_ERROR
-          message:
-            type: string
-            example: Job not found
-          error:
-            type: array
-            items:
-              type: object
-
-  securitySchemes:
-    bearer:
-      type: apiKey
-      name: X-auth-token
-      in: header
+          minItems: 0
+          uniqueItems: false
+        meta:
+          type: object
+          properties:
+            correlation:
+              type: string
+  securitySchemes: {}

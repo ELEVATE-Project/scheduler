@@ -61,6 +61,11 @@
       command: "chdir={{current_path}}/src pm2 start app.js -i 2 --name elevate-scheduler"
       register: pm2Info
 
+    - name: generate api-doc 
+      shell: cd {{current_path}}/src && redoc-cli build -o ./api-doc/index.html ./api-doc/api-doc.yaml
+      register: apiDocResponse 
+    - debug: msg=" Api-doc {{ apiDocResponse }} "
+
     - name: debug info
       debug:
          msg: "Pm2 log {{pm2Info}}"

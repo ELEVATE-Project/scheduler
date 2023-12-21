@@ -5,16 +5,23 @@ const insertJob = async () => {
 	try {
 		let name = faker.random.alpha(5)
 		bodyData = {
-			name: name,
+			jobName: name,
 			email: ['nevil@tunerlabs.com'],
 			request: {
-				url: 'http://localhost:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour',
+				url: 'http://mentoring:3000/mentoring/v1/notifications/emailCronJobBeforeOneHour',
 				method: 'get',
-				header: { internal_access_token: 'asdgbsd891237bzus81923ziu3y1283ziu318237aSXS' },
+				header: {
+					internal_access_token: 'Fgn1xT7pmCK9PSxVt7yr',
+				},
 			},
-			schedule: {
-				scheduleType: 'once',
-				interval: '1 minute',
+			jobOptions: {
+				jobId: name,
+				repeat: {
+					pattern: '15 3 * * *',
+				},
+				removeOnComplete: 100,
+				removeOnFail: 200,
+				attempts: 3,
 			},
 		}
 		await request
