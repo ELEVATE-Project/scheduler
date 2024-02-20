@@ -49,7 +49,7 @@ exports.create = async (requestBody) => {
 	} catch (err) {
 		console.error(err)
 		return responses.failureResponse({
-			message: responseMessage.JOB_NOT_FOUND,
+			message: responseMessage.FAILED_TO_PROCESS,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
 		})
