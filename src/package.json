@@ -57,6 +57,7 @@
 		"@routes": "routes",
 		"@services": "services",
 		"@validators": "validators",
-		"@middlewares": "middlewares"
+		"@middlewares": "middlewares",
+		"@helpers": "helpers"
 	}
 }
