@@ -43,6 +43,14 @@ The Mentoring building block enables effective mentoring interactions between me
 </div>
 <br>
 
+# System Requirements
+
+-   **Operating System:** Ubuntu 22
+-   **Node.js:** v20
+-   **PostgreSQL:** 16
+-   **Citus:** 12.1
+-   **Apache Kafka:** 3.5.0
+
 # Setup Options
 
 Elevate scheduler services can be setup in local using two methods:
@@ -137,75 +145,120 @@ Elevate scheduler services can be setup in local using two methods:
 
 **Expectation**: Run single service with existing local dependencies in host (**Non-Docker Implementation**).
 
-### Steps
+## Installations
 
-1.  Install required tools & dependencies
+### Install Node.js LTS
 
-    Install any IDE (eg: VScode)
+Refer to the [NodeSource distributions installation scripts](https://github.com/nodesource/distributions#installation-scripts) for Node.js installation.
 
-    Install Nodejs: https://nodejs.org/en/download/
+```bash
+$ curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - &&\
+sudo apt-get install -y nodejs
+```
 
-    Install MongoDB: https://docs.mongodb.com/manual/installation/
+### Install Build Essential
 
-    Install Robo-3T: ​​ https://robomongo.org/
+```bash
+$ sudo apt-get install build-essential
+```
 
-2.  Clone the **Scheduler service** repository.
+### Install PM2
 
-    ```
-    git clone https://github.com/ELEVATE-Project/scheduler.git
-    ```
+Refer to [How To Set Up a Node.js Application for Production on Ubuntu 22.04](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-22-04).
 
-3.  Add **.env** file to the project directory
+**Run the following command**
 
-    Create a **.env** file in **src** directory of the project and copy these environment variables into it.
+```bash
+$ sudo npm install pm2@latest -g
+```
 
-    ```
-    #Scheduler Service Config
+## Setting up Repository
 
-    #Application Base url
-    APPLICATION_BASE_URL = /scheduler/
+### Clone the scheduler repository to /opt/backend directory
 
-    # Kafka hosted server url
-    KAFKA_URL = localhost:9092
+```bash
+opt/backend$ git clone -b develop-2.5 --single-branch "https://github.com/ELEVATE-Project/scheduler.git"
+```
 
-    # Kafka topic to push notification data
-    NOTIFICATION_KAFKA_TOPIC = 'notificationtopic'
+### Install Npm packages from src directory
 
-    # MONGODB_URL
-    MONGODB_URL = mongodb://localhost:27017/tl-cron-rest
+```bash
+backend/scheduler/src$ sudo npm i
+```
 
-    # App running port
-    APPLICATION_PORT = 4000
+### Create .env file in src directory
 
-    # Api doc url
-    API_DOC_URL = '/api-doc'
-    ```
+```bash
+scheduler/src$ sudo nano .env
+```
 
-4.  Start MongoDB locally
+Copy-paste the following env variables to the `.env` file:
 
-    Based on your host operating system and method used, start MongoDB.
+```env
+# Scheduler Service Config
 
-5.  Install Npm packages
+# Application Base URL
+APPLICATION_BASE_URL=/scheduler/
 
-    ```
-    ELEVATE/scheduler/src$ npm install
-    ```
+# Kafka hosted server URL
+KAFKA_URL=localhost:9092
 
-6.  Start Scheduler server
+# Kafka topic to push notification data
+NOTIFICATION_KAFKA_TOPIC='develop.notifications'
 
-        ```
-        ELEVATE/scheduler/src$ npm start
-        ```
+# MongoDB URL
+MONGODB_URL='mongodb://localhost:27017/tl-cron-rest'
+
+# App running port
+APPLICATION_PORT=4000
+
+# Api doc URL
+API_DOC_URL='/api-doc'
+
+APPLICATION_ENV=development
+
+ENABLE_LOG='true'
+
+ERROR_LOG_LEVEL='silly'
+DISABLE_LOG=false
+
+DEFAULT_QUEUE='email'
+
+REDIS_HOST='localhost'
+REDIS_PORT=6379
+```
+
+Save and exit.
+
+## Start the Service
+
+Navigate to the src folder of scheduler service and run pm2 start command:
+
+```bash
+scheduler/src$ pm2 start app.js -i 2 --name elevate-scheduler
+```
+
+#### Run pm2 ls command
+
+```bash
+$ pm2 ls
+```
+
+Output should look like this (Sample output, might slightly differ in your installation):
+
+```bash
+┌────┬─────────────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name                    │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼─────────────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 15 │ elevate-scheduler       │ default     │ 1.0.0   │ cluster │ 86368    │ 47h    │ 0    │ online    │ 0%       │ 89.8mb   │ jenkins  │ disabled │
+│ 16 │ elevate-scheduler       │ default     │ 1.0.0   │ cluster │ 86378    │ 47h    │ 0    │ online    │ 0%       │ 86.9mb   │ jenkins  │ disabled │
+└────┴─────────────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+```
+
+This concludes the services and dependency setup.
 
 </details>
 <br>
-
-# Tech stack
-
--   Node - 16.0.0
--   Kafka - 3.1.0
--   Jest - 28.1.1
--   MongoDB - 4.1.4
 
 # Run tests
 
