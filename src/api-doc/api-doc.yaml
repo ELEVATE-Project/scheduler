@@ -23,7 +23,7 @@ servers:
   - url: http://127.0.0.1:4000
     description: Localhost
 tags:
-  - name: Default
+  - name: Jobs
     description: ''
     externalDocs:
       description: ''
@@ -31,7 +31,7 @@ tags:
 paths:
   /scheduler/jobs/create:
     post:
-      summary: Create repeatable jobs
+      summary: Create Repeatable Jobs
       description: >-
         The Scheduler Service using BullMQ allows you to add jobs to a queue
         with different scheduling options. It supports three types of jobs:
@@ -39,10 +39,10 @@ paths:
         with an interval. Accepts a JSON request body with specific parameters.
       operationId: /scheduler/jobs/create
       tags: &ref_0
-        - Default
+        - Jobs
       parameters: &ref_1 []
       requestBody:
-        description: Job details
+        description: Job Details
         required: true
         content:
           application/json:
@@ -222,7 +222,7 @@ paths:
                     meta:
                       correlation: 986c2de2-93a8-4f13-a13f-59501c58d287
           headers: &ref_2 {}
-          description: Success response
+          description: OK. Success response
         '400':
           content:
             application/json:
@@ -247,7 +247,7 @@ paths:
         unique identifier of the job to be removed.
       operationId: /scheduler/jobs/remove
       tags:
-        - Default
+        - Jobs
       parameters: []
       requestBody:
         content:
@@ -273,7 +273,7 @@ paths:
                     result: true
                     meta:
                       correlation: 73c06d73-8fb1-487f-b073-992233231bd6
-          description: Success response
+          description: OK. Success response
         '400':
           content:
             application/json:
@@ -287,10 +287,10 @@ paths:
                     error: []
                     meta:
                       correlation: e08c248a-fbee-459f-b41a-97018663a51d
-          description: Response when job not found
+          description: Failure Response - Job not found
   /scheduler/jobs/purge:
     post:
-      summary: Purge jobs/queue
+      summary: Purge Jobs/Queue
       description: >-
         Purge jobs/queue using different methods (clean, drain, obliterate).
         Accepts a JSON request body with the method and options parameters.
@@ -298,7 +298,7 @@ paths:
         Note: "options" parameter is only needed for the clean method.
       operationId: /scheduler/jobs/purge
       tags:
-        - Default
+        - Jobs
       parameters: []
       requestBody:
         content:
@@ -350,7 +350,7 @@ paths:
                     result: {}
                     meta:
                       correlation: fe7d4a8f-76f0-436a-9f9b-e118a89c346f
-          description: Success Response
+          description: OK. Success Response
         '400':
           description: Failure Response
           content:
@@ -370,21 +370,21 @@ paths:
       description: Get a list of jobs from the scheduler
       operationId: /scheduler/jobs/list
       tags:
-        - Default
+        - Jobs
       parameters:
         - in: query
           name: filter
-          description: ''
+          description: 'Specify the status filter for the jobs.'
           schema:
             type: string
             enum:
-              - completed
-              - failed
-              - delayed
-              - active
-              - wait
-              - paused
-              - repeat
+              - 'completed'
+              - 'failed'
+              - 'delayed'
+              - 'active'
+              - 'wait'
+              - 'paused'
+              - 'repeat'
       responses:
         '200':
           content:
@@ -424,7 +424,7 @@ paths:
                         timestamp: 1684835756867
                     meta:
                       correlation: 8dec3a0b-1622-4d11-9071-4434c126b598
-          description: Success response
+          description: OK. Success response
         '400':
           content:
             application/json:
@@ -439,7 +439,7 @@ paths:
                     meta:
                       correlation: 758680ac-06cd-4d45-a7ec-eddad54356a0
           description: Failure Response
-      summary: Get list of jobs
+      summary: Job List
     parameters: []
   /scheduler/jobs/updateDelay:
     post:
@@ -453,7 +453,7 @@ paths:
       tags: *ref_0
       parameters: *ref_1
       requestBody:
-        description: Job details
+        description: Job Details
         required: true
         content:
           application/json:
@@ -578,7 +578,7 @@ paths:
                     meta:
                       correlation: a2bcaf3d-6010-42ba-a3e4-cf02d7138847
           headers: *ref_2
-          description: Success response
+          description: OK. Success response
         '404':
           content:
             application/json:

@@ -7,10 +7,10 @@
 	},
 	"item": [
 		{
-			"name": "create",
+			"name": "Create",
 			"item": [
 				{
-					"name": "Create Repetable  job(cron)",
+					"name": "Create Repetable Job (Cron)",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -43,15 +43,21 @@
 						"url": {
 							"raw": "http://localhost:4000/scheduler/jobs/create",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "4000",
-							"path": ["scheduler", "jobs", "create"]
+							"path": [
+								"scheduler",
+								"jobs",
+								"create"
+							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Create Job delay",
+					"name": "Create Job Delay",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -109,15 +115,21 @@
 						"url": {
 							"raw": "http://localhost:4000/scheduler/jobs/create",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "4000",
-							"path": ["scheduler", "jobs", "create"]
+							"path": [
+								"scheduler",
+								"jobs",
+								"create"
+							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Create Repetable  job(interval)",
+					"name": "Create Repetable Job (Interval)",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -133,9 +145,15 @@
 						"url": {
 							"raw": "http://localhost:4000/scheduler/jobs/create",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "4000",
-							"path": ["scheduler", "jobs", "create"]
+							"path": [
+								"scheduler",
+								"jobs",
+								"create"
+							]
 						}
 					},
 					"response": []
@@ -143,7 +161,7 @@
 			]
 		},
 		{
-			"name": "purge",
+			"name": "Purge",
 			"item": [
 				{
 					"name": "Clean",
@@ -162,15 +180,21 @@
 						"url": {
 							"raw": "http://localhost:4000/scheduler/jobs/purge",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "4000",
-							"path": ["scheduler", "jobs", "purge"]
+							"path": [
+								"scheduler",
+								"jobs",
+								"purge"
+							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "drain",
+					"name": "Drain",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -186,15 +210,21 @@
 						"url": {
 							"raw": "http://localhost:4000/scheduler/jobs/purge",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "4000",
-							"path": ["scheduler", "jobs", "purge"]
+							"path": [
+								"scheduler",
+								"jobs",
+								"purge"
+							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "obliterate",
+					"name": "Obliterate",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -210,9 +240,15 @@
 						"url": {
 							"raw": "http://localhost:4000/scheduler/jobs/purge",
 							"protocol": "http",
-							"host": ["localhost"],
+							"host": [
+								"localhost"
+							],
 							"port": "4000",
-							"path": ["scheduler", "jobs", "purge"]
+							"path": [
+								"scheduler",
+								"jobs",
+								"purge"
+							]
 						}
 					},
 					"response": []
@@ -220,7 +256,7 @@
 			]
 		},
 		{
-			"name": "Remove job",
+			"name": "Remove Job",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -236,15 +272,21 @@
 				"url": {
 					"raw": "http://localhost:4000/scheduler/jobs/remove",
 					"protocol": "http",
-					"host": ["localhost"],
+					"host": [
+						"localhost"
+					],
 					"port": "4000",
-					"path": ["scheduler", "jobs", "remove"]
+					"path": [
+						"scheduler",
+						"jobs",
+						"remove"
+					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "List",
+			"name": "List Job",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -263,9 +305,15 @@
 				"url": {
 					"raw": "http://localhost:4000/scheduler/jobs/list?filter=completed,failed,delayed,active,wait,paused,repeat",
 					"protocol": "http",
-					"host": ["localhost"],
+					"host": [
+						"localhost"
+					],
 					"port": "4000",
-					"path": ["scheduler", "jobs", "list"],
+					"path": [
+						"scheduler",
+						"jobs",
+						"list"
+					],
 					"query": [
 						{
 							"key": "filter",
@@ -335,9 +383,15 @@
 				"url": {
 					"raw": "http://localhost:4000/scheduler/jobs/updateDelay",
 					"protocol": "http",
-					"host": ["localhost"],
+					"host": [
+						"localhost"
+					],
 					"port": "4000",
-					"path": ["scheduler", "jobs", "updateDelay"]
+					"path": [
+						"scheduler",
+						"jobs",
+						"updateDelay"
+					]
 				}
 			},
 			"response": []
