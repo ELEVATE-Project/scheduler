@@ -4,7 +4,7 @@
  * created-date : 22/May/2023
  * Description : Jobs helpers
  */
-const responses = require('@helpers/responses')
+const common = require('@constants/common')
 const responseMessage = require('@constants/responseMessage')
 const httpResponse = require('@constants/httpResponse')
 
@@ -20,7 +20,7 @@ exports.create = async (requestBody) => {
 		const repeatableJobExists = allRepeatableJobs.find((job) => job.id === requestBody.jobOptions.jobId)
 
 		if (repeatableJobExists || jobExists) {
-			return responses.failureResponse({
+			return common.failureResponse({
 				message: responseMessage.JOB_EXISTS,
 				success: false,
 				status: httpResponse.CONFLICT,
@@ -34,22 +34,22 @@ exports.create = async (requestBody) => {
 		const newJob = await myQueue.add(requestBody.jobName, jobDetails, requestBody.jobOptions)
 
 		if (newJob) {
-			return responses.successResponse({
+			return common.successResponse({
 				status: httpResponse.CREATED,
 				message: responseMessage.JOB_QUEUED,
 				result: newJob,
 			})
 		}
 
-		return responses.failureResponse({
+		return common.failureResponse({
 			message: responseMessage.FAILED_TO_ADD_JOB,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
 		})
 	} catch (err) {
 		console.error(err)
-		return responses.failureResponse({
-			message: responseMessage.FAILED_TO_PROCESS,
+		return common.failureResponse({
+			message: responseMessage.JOB_NOT_FOUND,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
 		})
@@ -61,7 +61,7 @@ exports.updateDelay = async (requestBody) => {
 		const jobExists = await myQueue.getJob(requestBody.id)
 
 		if (!jobExists) {
-			return responses.failureResponse({
+			return common.failureResponse({
 				message: responseMessage.JOB_NOT_FOUND,
 				success: false,
 				status: httpResponse.NOT_FOUND,
@@ -71,7 +71,7 @@ exports.updateDelay = async (requestBody) => {
 		const updatedJob = await myQueue.getJob(requestBody.id)
 
 		if (updatedJob.delay == requestBody.delay) {
-			return responses.successResponse({
+			return common.successResponse({
 				status: httpResponse.OK,
 				message: responseMessage.DELAY_UPDATED,
 				result: updatedJob,
@@ -79,7 +79,7 @@ exports.updateDelay = async (requestBody) => {
 		}
 	} catch (err) {
 		console.error(err)
-		return responses.failureResponse({
+		return common.failureResponse({
 			message: responseMessage.JOB_NOT_FOUND,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
@@ -98,7 +98,7 @@ exports.remove = async (requestBody) => {
 		let removedRepeatableJob, removedJob
 
 		if (!jobExists && !repeatableJobExists) {
-			return responses.failureResponse({
+			return common.failureResponse({
 				message: responseMessage.JOB_NOT_FOUND,
 				success: false,
 				status: httpResponse.BAD_REQUEST,
@@ -116,20 +116,20 @@ exports.remove = async (requestBody) => {
 		}
 
 		if (removedRepeatableJob || removedJob) {
-			return responses.successResponse({
+			return common.successResponse({
 				status: httpResponse.OK,
 				message: responseMessage.JOB_REMOVED,
 				result: removedRepeatableJob || removedJob,
 			})
 		}
-		return responses.failureResponse({
+		return common.failureResponse({
 			message: responseMessage.FAILED_TO_REMOVE_JOB,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
 		})
 	} catch (err) {
 		console.error(err)
-		return responses.failureResponse({
+		return common.failureResponse({
 			message: responseMessage.FAILED_TO_PROCESS,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
@@ -149,20 +149,20 @@ exports.list = async (query) => {
 		})
 
 		if (allJobs.length === 0) {
-			return responses.failureResponse({
+			return common.failureResponse({
 				message: responseMessage.NO_JOBS_FOUND,
 				success: false,
 				status: httpResponse.BAD_REQUEST,
 			})
 		}
-		return responses.successResponse({
+		return common.successResponse({
 			status: httpResponse.OK,
 			message: responseMessage.JOB_LIST_FETCHED,
 			result: allJobs,
 		})
 	} catch (err) {
 		console.error(err)
-		return responses.failureResponse({
+		return common.failureResponse({
 			message: responseMessage.FAILED_TO_PROCESS,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
@@ -200,20 +200,20 @@ exports.purge = async (requestBody) => {
 				break
 		}
 		if (deletedJobIds || isDeleted) {
-			return responses.successResponse({
+			return common.successResponse({
 				status: httpResponse.OK,
 				message: responseMessage[responseMessageKey],
 				result: deletedJobIds,
 			})
 		}
-		return responses.failureResponse({
+		return common.failureResponse({
 			message: responseMessage.PURGE_FAILURE,
 			success: false,
 			status: httpResponse.BAD_REQUEST,
 		})
 	} catch (err) {
 		console.error(err)
-		return responses.failureResponse({
+		return common.failureResponse({
 			message: responseMessage.FAILED_TO_PROCESS,
 			success: false,
 			status: httpResponse.BAD_REQUEST,

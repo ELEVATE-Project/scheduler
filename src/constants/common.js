@@ -1,11 +1,12 @@
-/**
- * name : responses.js
- * author : Vishnudas
- * created-date : 31-Jan-2024
- * Description : API response used in the service
- */
 const { elevateLog, correlationId } = require('elevate-logger')
 const logger = elevateLog.init()
+
+/**
+ * name : common.js
+ * author : Vishnudas
+ * created-date : 19-may-2022
+ * Description : all common constants
+ */
 
 const successResponse = ({ message, success = true, status = 200, result = {}, meta = {} }) => {
 	let response = {
