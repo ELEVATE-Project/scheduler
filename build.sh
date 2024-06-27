@@ -6,7 +6,7 @@ echo "Docker build script"
 set -eo pipefail
 
 build_tag=$1
-name=elevate-scheduler-service
+name=mentoring-scheduler-service
 node=$2
 org=$3
 
