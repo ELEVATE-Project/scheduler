@@ -13,6 +13,7 @@ const { Queue } = require('bullmq')
 
 exports.create = async (requestBody) => {
 	try {
+		console.log('requestBody:::::::::', requestBody)
 		const myQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
 
 		const jobExists = await myQueue.getJob(requestBody.jobOptions.jobId)
