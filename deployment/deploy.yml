@@ -44,7 +44,7 @@
       file:
         src={{ release_path }}
         dest={{ current_path }}
-        state=link
+        state=link  
     - name: Delete old pm2 process
       command: pm2 delete elevate-scheduler
       ignore_errors: yes
@@ -56,6 +56,11 @@
       shell: cat {{ project_path }}/data2.json | {{ current_path }}/src/scripts/json2env.sh > {{ current_path }}/src/.env
       register: envConfig 
     - debug: msg=" cred {{ envConfig }} "
+
+    - name: Delete release folder
+      file:
+        path: "{{ release_path }}"
+        state: absent
 
     - name: Start pm2
       command: "chdir={{current_path}}/src pm2 start app.js -i 2 --name elevate-scheduler"
