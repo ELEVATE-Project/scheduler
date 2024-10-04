@@ -11,10 +11,11 @@ const httpResponse = require('@constants/httpResponse')
 const { redisConfiguration } = require('@configs/redis')
 const { Queue } = require('bullmq')
 
+// Initialize Queue once at the module level
+const myQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
+
 exports.create = async (requestBody) => {
 	try {
-		const myQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
-
 		const jobExists = await myQueue.getJob(requestBody.jobOptions.jobId)
 		const allRepeatableJobs = await myQueue.getRepeatableJobs()
 		const repeatableJobExists = allRepeatableJobs.find((job) => job.id === requestBody.jobOptions.jobId)
@@ -27,9 +28,7 @@ exports.create = async (requestBody) => {
 			})
 		}
 
-		const jobDetails = Object.assign({}, requestBody)
-		delete jobDetails.jobName
-		delete jobDetails.jobOptions
+		const { jobName, jobOptions, ...jobDetails } = requestBody
 
 		const newJob = await myQueue.add(requestBody.jobName, jobDetails, requestBody.jobOptions)
 
@@ -55,9 +54,9 @@ exports.create = async (requestBody) => {
 		})
 	}
 }
+
 exports.updateDelay = async (requestBody) => {
 	try {
-		const myQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
 		const jobExists = await myQueue.getJob(requestBody.id)
 
 		if (!jobExists) {
@@ -86,10 +85,9 @@ exports.updateDelay = async (requestBody) => {
 		})
 	}
 }
+
 exports.remove = async (requestBody) => {
 	try {
-		const myQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
-
 		const jobExists = await myQueue.getJob(requestBody.jobId)
 
 		const allRepeatableJobs = await myQueue.getRepeatableJobs()
@@ -141,8 +139,6 @@ exports.list = async (query) => {
 	try {
 		const filters = query.filter ? query.filter.split(',') : [] // Split the filter string if it exists, otherwise use an empty array
 
-		const myQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
-
 		let allJobs = await myQueue.getJobs(filters, 0, -1, true)
 		allJobs.forEach((pendingJob) => {
 			delete pendingJob['data']
@@ -172,7 +168,6 @@ exports.list = async (query) => {
 
 exports.purge = async (requestBody) => {
 	try {
-		const myQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
 		let isDeleted, deletedJobIds, responseMessageKey
 		switch (requestBody.method) {
 			case 'clean':
