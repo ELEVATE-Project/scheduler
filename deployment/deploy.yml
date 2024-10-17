@@ -65,6 +65,7 @@
       file:
         path: "{{ release_path }}"
         state: absent
+        when: release_path != current_path # Ensure you don’t delete the active release path
 
     - name: generate api-doc 
       shell: cd {{current_path}}/src && redoc-cli build -o ./api-doc/index.html ./api-doc/api-doc.yaml
