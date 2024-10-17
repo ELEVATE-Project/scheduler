@@ -57,14 +57,14 @@
       register: envConfig 
     - debug: msg=" cred {{ envConfig }} "
 
+    - name: Start pm2
+      command: "chdir={{current_path}}/src pm2 start app.js -i 2 --name elevate-scheduler"
+      register: pm2Info
+
     - name: Delete release folder
       file:
         path: "{{ release_path }}"
         state: absent
-
-    - name: Start pm2
-      command: "chdir={{current_path}}/src pm2 start app.js -i 2 --name elevate-scheduler"
-      register: pm2Info
 
     - name: generate api-doc 
       shell: cd {{current_path}}/src && redoc-cli build -o ./api-doc/index.html ./api-doc/api-doc.yaml
