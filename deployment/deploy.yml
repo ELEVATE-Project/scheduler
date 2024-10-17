@@ -61,12 +61,6 @@
       command: "chdir={{current_path}}/src pm2 start app.js -i 2 --name elevate-scheduler"
       register: pm2Info
 
-    - name: Delete release folder
-      file:
-        path: "{{ release_path }}"
-        state: absent
-        when: release_path != current_path # Ensure you don’t delete the active release path
-
     - name: generate api-doc 
       shell: cd {{current_path}}/src && redoc-cli build -o ./api-doc/index.html ./api-doc/api-doc.yaml
       register: apiDocResponse 
