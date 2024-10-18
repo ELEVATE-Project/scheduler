@@ -47,12 +47,11 @@
     
     - name: create folder
       shell: cd {{  project_path }} && mkdir scheduler
-
-    - name: Copy code from release to current path
-      copy:
+    
+    - name: Synchronize files from release to current path
+      synchronize:
         src: "{{ release_path }}/"
         dest: "{{ current_path }}/"
-        remote_src: yes
         recursive: yes
         
     - name: Delete old pm2 process
