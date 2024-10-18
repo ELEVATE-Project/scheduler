@@ -39,19 +39,25 @@
         version: "{{ gitBranch }}"
     - name: Update npm
       shell: cd {{release_path}}/src && npm i
-
-    - name: Create scheduler folder if it does not exist
+    
+    - name: Delete old folder
       file:
-        path: "{{ project_path }}/scheduler"
-        state: directory
+        path: "{{ current_path }}"
+        state: absent
+    
+    - name: create folder
+      shell: cd {{  project_path }} && mkdir scheduler
 
-    - name: Move code from release  to service folder
-      shell: mv "{{ release_path }}"/* {{ current_path }}/
-      
-    - name: Delete old pm2 process if it exists
-      shell: pm2 delete elevate-scheduler
+    - name: Copy code from release to current path
+      copy:
+        src: "{{ release_path }}/"
+        dest: "{{ current_path }}/"
+        remote_src: yes
+        recursive: yes
+        
+    - name: Delete old pm2 process
+      command: pm2 delete elevate-scheduler
       ignore_errors: yes
-      register: pm2_delete_result
     
     - name: set permission
       shell: chmod 744 {{ current_path }}/src/scripts/json2env.sh  
@@ -60,11 +66,6 @@
       shell: cat {{ project_path }}/data2.json | {{ current_path }}/src/scripts/json2env.sh > {{ current_path }}/src/.env
       register: envConfig 
     - debug: msg=" cred {{ envConfig }} "
-
-    - name: Delete release folder
-      file:
-        path: "{{ release_path }}"
-        state: absent
 
     - name: Start pm2
       command: "chdir={{current_path}}/src pm2 start app.js -i 2 --name elevate-scheduler"
