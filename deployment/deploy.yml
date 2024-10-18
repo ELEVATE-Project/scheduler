@@ -50,7 +50,7 @@
   
 
     - name: Move code from release  to service folder
-      shell: mv "{{ project_path }}"/* {{ current_path }}/
+      shell: mv "{{ release_path }}"/* {{ current_path }}/
       
     - name: Delete old pm2 process
       command: pm2 delete elevate-scheduler
