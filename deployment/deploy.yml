@@ -39,10 +39,18 @@
         version: "{{ gitBranch }}"
     - name: Update npm
       shell: cd {{release_path}}/src && npm i
+
+    - name: Delete Old Folder 
+      file:
+        path: "{{ current_path }}"
+        state: absent
+
+    - name: create folder 
+      shell: cd {{ current_path }} && mkdir scheduler
   
 
     - name: Move code from release  to service folder
-      shell: mv "{{ release_path }}"/* {{ current_path }}/
+      shell: mv "{{ project_path }}"/* {{ current_path }}/
       
     - name: Delete old pm2 process
       command: pm2 delete elevate-scheduler
