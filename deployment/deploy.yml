@@ -14,10 +14,6 @@
       set_fact:
         release_path: "{{ project_path }}/releases/{{ lookup('pipe','date +%Y%m%d%H%M%S') }}"
         current_path: "{{ project_path }}/scheduler"
-    
-    - name: Run vault credentials
-      shell: "curl --location --request GET '{{ vaultAddress }}scheduler' --header 'X-Vault-Token: {{ slurpfile['content'] | b64decode }}' | jq '.data' > '{{ release_path }}/data2.json'"
-      register: vaultCurl
 
     - name: Retrieve current release folder
       command: readlink -f scheduler
@@ -25,12 +21,14 @@
       ignore_errors: yes
       args:
         chdir: "{{ project_path }}"
+        
     - name: Create new folder
       file:
         dest={{ release_path }}
         mode=0755
         recurse=yes
         state=directory
+        
     - name: Clone the repository
       git:
         repo: https://github.com/ELEVATE-Project/scheduler.git
@@ -38,6 +36,12 @@
         clone: yes
         update: yes
         version: "{{ gitBranch }}"
+    
+    - name: Run vault credentials
+      shell: "curl --location --request GET '{{ vaultAddress }}scheduler' --header 'X-Vault-Token: {{ slurpfile['content'] | b64decode }}' | jq '.data' > '{{ release_path }}/data2.json'"
+      register: vaultCurl
+
+  
     - name: Update npm
       shell: cd {{release_path}}/src && npm i
     
