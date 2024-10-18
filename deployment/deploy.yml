@@ -52,11 +52,8 @@
       debug:
         msg: "Release path: {{ release_path }}"
     
-    - name: Synchronize files from release to current path
-      synchronize:
-        src: "{{ release_path }}/"
-        dest: "{{ current_path }}/"
-        recursive: yes
+    - name: Move files from release to current path
+      command: cp -r {{ release_path }}/* {{ current_path }}/
         
     - name: Delete old pm2 process
       command: pm2 delete elevate-scheduler
