@@ -10,14 +10,15 @@
       register: slurpfile
     #- debug: msg="{{ slurpfile['content'] | b64decode }}"
     #- debug: msg="the value of foo.txt is {{ contents }}"
-    - name: Run vault credentials
-      shell: "curl --location --request GET '{{ vaultAddress }}scheduler' --header 'X-Vault-Token: {{ slurpfile['content'] | b64decode }}' | jq '.data' > '{{ project_path 
-}}/data2.json'"
-      register: vaultCurl
     - name: Set some variable
       set_fact:
         release_path: "{{ project_path }}/releases/{{ lookup('pipe','date +%Y%m%d%H%M%S') }}"
         current_path: "{{ project_path }}/scheduler"
+    
+    - name: Run vault credentials
+      shell: "curl --location --request GET '{{ vaultAddress }}scheduler' --header 'X-Vault-Token: {{ slurpfile['content'] | b64decode }}' | jq '.data' > '{{ release_path }}/data2.json'"
+      register: vaultCurl
+
     - name: Retrieve current release folder
       command: readlink -f scheduler
       register: current_release_path
@@ -63,7 +64,7 @@
       shell: chmod 744 {{ current_path }}/src/scripts/json2env.sh  
       
     - name: generate .env 
-      shell: cat {{ project_path }}/data2.json | {{ current_path }}/src/scripts/json2env.sh > {{ current_path }}/src/.env
+      shell: cat {{ current_path }}/data2.json | {{ current_path }}/src/scripts/json2env.sh > {{ current_path }}/src/.env
       register: envConfig 
     - debug: msg=" cred {{ envConfig }} "
 
