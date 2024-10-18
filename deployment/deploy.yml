@@ -48,12 +48,13 @@
     - name: Move code from release  to service folder
       shell: mv "{{ release_path }}"/* {{ current_path }}/
       
-    - name: Delete old pm2 process
-      command: pm2 delete elevate-scheduler
+    - name: Delete old pm2 process if it exists
+      shell: pm2 delete elevate-scheduler
       ignore_errors: yes
+      register: pm2_delete_result
     
     - name: set permission
-      shell: chmod 744 {{ project_path }}/src/scripts/json2env.sh  
+      shell: chmod 744 {{ current_path }}/src/scripts/json2env.sh  
       
     - name: generate .env 
       shell: cat {{ project_path }}/data2.json | {{ current_path }}/src/scripts/json2env.sh > {{ current_path }}/src/.env
