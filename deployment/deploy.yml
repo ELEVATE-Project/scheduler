@@ -47,6 +47,10 @@
     
     - name: create folder
       shell: cd {{  project_path }} && mkdir scheduler
+
+    - name: Debug release path
+      debug:
+        msg: "Release path: {{ release_path }}"
     
     - name: Synchronize files from release to current path
       synchronize:
