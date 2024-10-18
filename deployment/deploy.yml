@@ -81,6 +81,11 @@
       register: apiDocResponse 
     - debug: msg=" Api-doc {{ apiDocResponse }} "
 
+    - name: Delete release_path folder
+      file:
+        path: "{{ release_path }}"
+        state: absent
+
     - name: debug info
       debug:
          msg: "Pm2 log {{pm2Info}}"
