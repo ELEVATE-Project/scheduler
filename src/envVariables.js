@@ -38,6 +38,19 @@ let enviromentVariables = {
 		optional: true,
 		default:'notificationtopic'
 	},
+	KAFKA_URL: {
+		message: 'Required kafka url',
+		optional: false,
+	},
+	REDIS_HOST: {
+		message: 'Required redis host',
+		optional: false,
+	},
+	REDIS_PORT: {
+		message: 'Required redis port number',
+		optional: false,
+	},
+
 }
 
 let success = true
