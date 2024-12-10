@@ -8,6 +8,15 @@ const { elevateLog, correlationIdMiddleware } = require('elevate-logger')
 elevateLog.config(process.env.ERROR_LOG_LEVEL, 'scheduler', process.env.DISABLE_LOG)
 const logger = elevateLog.init()
 
+let environmentData = require('./envVariables')()
+
+if (!environmentData.success) {
+	logger.error('Server could not start . Not all environment variable is provided', {
+		triggerNotification: true,
+	})
+	process.exit()
+}
+
 //config
 require('./configs')
 
