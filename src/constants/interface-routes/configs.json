@@ -1,84 +1,170 @@
 {
-    "routes": [
-        {
-            "sourceRoute": "/scheduler/jobs/create",
-            "type": "POST",
-            "priority": "MUST_HAVE",
-            "inSequence": false,
-            "orchestrated": false,
-            "targetPackages": [
-                {
-                    "basePackageName": "scheduler",
-                    "packageName": "elevate-scheduler"
-                }
-            ],
-            "rateLimit": {
-                "type": "none"
-            }
-        },
-        {
-            "sourceRoute": "/scheduler/jobs/updateDelay",
-            "type": "POST",
-            "priority": "MUST_HAVE",
-            "inSequence": false,
-            "orchestrated": false,
-            "targetPackages": [
-                {
-                    "basePackageName": "scheduler",
-                    "packageName": "elevate-scheduler"
-                }
-            ],
-            "rateLimit": {
-                "type": "none"
-            }
-        },
-        {
-            "sourceRoute": "/scheduler/jobs/remove",
-            "type": "POST",
-            "priority": "MUST_HAVE",
-            "inSequence": false,
-            "orchestrated": false,
-            "targetPackages": [
-                {
-                    "basePackageName": "scheduler",
-                    "packageName": "elevate-scheduler"
-                }
-            ],
-            "rateLimit": {
-                "type": "none"
-            }
-        },
-        {
-            "sourceRoute": "/scheduler/jobs/list",
-            "type": "GET",
-            "priority": "MUST_HAVE",
-            "inSequence": false,
-            "orchestrated": false,
-            "targetPackages": [
-                {
-                    "basePackageName": "scheduler",
-                    "packageName": "elevate-scheduler"
-                }
-            ],
-            "rateLimit": {
-                "type": "none"
-            }
-        },
-        {
-            "sourceRoute": "/scheduler/jobs/purge",
-            "type": "POST",
-            "priority": "MUST_HAVE",
-            "inSequence": false,
-            "orchestrated": false,
-            "targetPackages": [
-                {
-                    "basePackageName": "scheduler",
-                    "packageName": "elevate-scheduler"
-                }
-            ],
-            "rateLimit": {
-                "type": "none"
-            }
-        }
-    ]
+	"routes": [
+		{
+			"sourceRoute": "/scheduler/jobs/create",
+			"type": "POST",
+			"priority": "MUST_HAVE",
+			"inSequence": false,
+			"orchestrated": false,
+			"targetPackages": [
+				{
+					"basePackageName": "scheduler",
+					"packageName": "elevate-scheduler"
+				}
+			],
+			"rateLimit": {
+				"type": "none"
+			}
+		},
+		{
+			"sourceRoute": "/scheduler/jobs/updateDelay",
+			"type": "POST",
+			"priority": "MUST_HAVE",
+			"inSequence": false,
+			"orchestrated": false,
+			"targetPackages": [
+				{
+					"basePackageName": "scheduler",
+					"packageName": "elevate-scheduler"
+				}
+			],
+			"rateLimit": {
+				"type": "none"
+			}
+		},
+		{
+			"sourceRoute": "/scheduler/jobs/remove",
+			"type": "POST",
+			"priority": "MUST_HAVE",
+			"inSequence": false,
+			"orchestrated": false,
+			"targetPackages": [
+				{
+					"basePackageName": "scheduler",
+					"packageName": "elevate-scheduler"
+				}
+			],
+			"rateLimit": {
+				"type": "none"
+			}
+		},
+		{
+			"sourceRoute": "/scheduler/jobs/list",
+			"type": "GET",
+			"priority": "MUST_HAVE",
+			"inSequence": false,
+			"orchestrated": false,
+			"targetPackages": [
+				{
+					"basePackageName": "scheduler",
+					"packageName": "elevate-scheduler"
+				}
+			],
+			"rateLimit": {
+				"type": "none"
+			}
+		},
+		{
+			"sourceRoute": "/scheduler/jobs/purge",
+			"type": "POST",
+			"priority": "MUST_HAVE",
+			"inSequence": false,
+			"orchestrated": false,
+			"targetPackages": [
+				{
+					"basePackageName": "scheduler",
+					"packageName": "elevate-scheduler"
+				}
+			],
+			"rateLimit": {
+				"type": "none"
+			}
+		},
+
+		{
+			"sourceRoute": "/scheduler/jobs/create",
+			"type": "POST",
+			"priority": "MUST_HAVE",
+			"inSequence": false,
+			"orchestrated": false,
+			"targetPackages": [
+				{
+					"basePackageName": "project",
+					"packageName": "elevate-projects"
+				}
+			],
+			"rateLimit": {
+				"type": "none"
+			},
+			"service": "scheduler"
+		},
+		{
+			"sourceRoute": "/scheduler/jobs/updateDelay",
+			"type": "POST",
+			"priority": "MUST_HAVE",
+			"inSequence": false,
+			"orchestrated": false,
+			"targetPackages": [
+				{
+					"basePackageName": "project",
+					"packageName": "elevate-projects"
+				}
+			],
+			"rateLimit": {
+				"type": "none"
+			},
+			"service": "scheduler"
+		},
+		{
+			"sourceRoute": "/scheduler/jobs/remove",
+			"type": "POST",
+			"priority": "MUST_HAVE",
+			"inSequence": false,
+			"orchestrated": false,
+			"targetPackages": [
+				{
+					"basePackageName": "project",
+					"packageName": "elevate-projects"
+				}
+			],
+			"rateLimit": {
+				"type": "none"
+			},
+			"service": "scheduler"
+		},
+		{
+			"sourceRoute": "/scheduler/jobs/list",
+			"type": "GET",
+			"priority": "MUST_HAVE",
+			"inSequence": false,
+			"orchestrated": false,
+			"targetPackages": [
+				{
+					"basePackageName": "project",
+					"packageName": "elevate-projects"
+				}
+			],
+			"rateLimit": {
+				"type": "none"
+			},
+			"service": "scheduler"
+		},
+		{
+			"sourceRoute": "/scheduler/jobs/purge",
+			"type": "POST",
+			"priority": "MUST_HAVE",
+			"inSequence": false,
+			"orchestrated": false,
+			"targetPackages": [
+				{
+					"basePackageName": "project",
+					"packageName": "elevate-projects"
+				}
+			],
+			"rateLimit": {
+				"type": "none"
+			},
+			"service": "scheduler"
+		}
+	]
 }
