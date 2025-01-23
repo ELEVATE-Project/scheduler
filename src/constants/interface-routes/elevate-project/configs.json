@@ -8,13 +8,14 @@
 			"orchestrated": false,
 			"targetPackages": [
 				{
-					"basePackageName": "scheduler",
-					"packageName": "elevate-scheduler"
+					"basePackageName": "project",
+					"packageName": "elevate-project"
 				}
 			],
 			"rateLimit": {
 				"type": "none"
-			}
+			},
+			"service": "scheduler"
 		},
 		{
 			"sourceRoute": "/scheduler/jobs/updateDelay",
@@ -24,13 +25,14 @@
 			"orchestrated": false,
 			"targetPackages": [
 				{
-					"basePackageName": "scheduler",
-					"packageName": "elevate-scheduler"
+					"basePackageName": "project",
+					"packageName": "elevate-project"
 				}
 			],
 			"rateLimit": {
 				"type": "none"
-			}
+			},
+			"service": "scheduler"
 		},
 		{
 			"sourceRoute": "/scheduler/jobs/remove",
@@ -40,13 +42,14 @@
 			"orchestrated": false,
 			"targetPackages": [
 				{
-					"basePackageName": "scheduler",
-					"packageName": "elevate-scheduler"
+					"basePackageName": "project",
+					"packageName": "elevate-project"
 				}
 			],
 			"rateLimit": {
 				"type": "none"
-			}
+			},
+			"service": "scheduler"
 		},
 		{
 			"sourceRoute": "/scheduler/jobs/list",
@@ -56,13 +59,14 @@
 			"orchestrated": false,
 			"targetPackages": [
 				{
-					"basePackageName": "scheduler",
-					"packageName": "elevate-scheduler"
+					"basePackageName": "project",
+					"packageName": "elevate-project"
 				}
 			],
 			"rateLimit": {
 				"type": "none"
-			}
+			},
+			"service": "scheduler"
 		},
 		{
 			"sourceRoute": "/scheduler/jobs/purge",
@@ -72,13 +76,14 @@
 			"orchestrated": false,
 			"targetPackages": [
 				{
-					"basePackageName": "scheduler",
-					"packageName": "elevate-scheduler"
+					"basePackageName": "project",
+					"packageName": "elevate-project"
 				}
 			],
 			"rateLimit": {
 				"type": "none"
-			}
+			},
+			"service": "scheduler"
 		}
 	]
 }
