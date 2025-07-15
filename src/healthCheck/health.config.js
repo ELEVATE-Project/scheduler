@@ -5,14 +5,14 @@
  * Description : Health check config file
  */
 
+const redisUrl = `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
 module.exports = {
 	name: process.env.SERVICE_NAME,
 	version: '1.0.0',
 	checks: {
-		bullmq: {
+		redis: {
 			enabled: true,
-			redisHost: process.env.REDIS_HOST,
-			redisPort: process.env.REDIS_PORT,
+			url: redisUrl,
 		},
 		microservices: [],
 	},
