@@ -65,8 +65,8 @@
 			}
 		},
 		{
-			"sourceRoute": "/scheduler/health",
-			"type": "GET",
+			"sourceRoute": "/scheduler/jobs/purge",
+			"type": "POST",
 			"priority": "MUST_HAVE",
 			"inSequence": false,
 			"orchestrated": false,
@@ -81,8 +81,8 @@
 			}
 		},
 		{
-			"sourceRoute": "/scheduler/jobs/purge",
-			"type": "POST",
+			"sourceRoute": "/scheduler/health",
+			"type": "GET",
 			"priority": "MUST_HAVE",
 			"inSequence": false,
 			"orchestrated": false,
