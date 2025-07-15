@@ -14,6 +14,9 @@ require('./configs')
 //express
 const app = express()
 
+// Health check
+require('./healthCheck')(app)
+
 const PORT = process.env.APPLICATION_PORT
 
 //middleware definition
