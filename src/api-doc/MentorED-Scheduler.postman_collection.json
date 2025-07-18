@@ -220,6 +220,26 @@
 			]
 		},
 		{
+			"name": "healthCheck",
+			"item": [
+				{
+					"name": "health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/scheduler/health",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4000",
+							"path": ["scheduler", "health"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Remove job",
 			"request": {
 				"method": "POST",
