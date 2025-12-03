@@ -14,7 +14,7 @@ if (!environmentData.success) {
 	logger.error('Server could not start . Not all environment variable is provided', {
 		triggerNotification: true,
 	})
-	process.exit()
+	process.exit(1)
 }
 
 //config
