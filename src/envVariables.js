@@ -1,5 +1,5 @@
 let table = require('cli-table')
-
+const validRequiredIfOperators = ['EQUALS', 'NOT_EQUALS']
 let tableData = new table()
 
 let enviromentVariables = {
