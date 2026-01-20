@@ -23,7 +23,12 @@ servers:
   - url: http://127.0.0.1:4000
     description: Localhost
 tags:
-  - name: Default
+  - name: jobs
+    description: ''
+    externalDocs:
+      description: ''
+      url: ''
+  - name: healthCheck
     description: ''
     externalDocs:
       description: ''
@@ -38,9 +43,9 @@ paths:
         delayed jobs, repeatable jobs with a cron pattern, and repeatable jobs
         with an interval. Accepts a JSON request body with specific parameters.
       operationId: /scheduler/jobs/create
-      tags: &ref_0
-        - Default
-      parameters: &ref_1 []
+      tags:
+        - jobs
+      parameters: &ref_0 []
       requestBody:
         description: Job details
         required: true
@@ -221,7 +226,7 @@ paths:
                       timestamp: 1684856181192
                     meta:
                       correlation: 986c2de2-93a8-4f13-a13f-59501c58d287
-          headers: &ref_2 {}
+          headers: &ref_1 {}
           description: Success response
         '400':
           content:
@@ -247,7 +252,7 @@ paths:
         unique identifier of the job to be removed.
       operationId: /scheduler/jobs/remove
       tags:
-        - Default
+        - jobs
       parameters: []
       requestBody:
         content:
@@ -298,7 +303,7 @@ paths:
         Note: "options" parameter is only needed for the clean method.
       operationId: /scheduler/jobs/purge
       tags:
-        - Default
+        - jobs
       parameters: []
       requestBody:
         content:
@@ -370,7 +375,7 @@ paths:
       description: Get a list of jobs from the scheduler
       operationId: /scheduler/jobs/list
       tags:
-        - Default
+        - jobs
       parameters:
         - in: query
           name: filter
@@ -450,8 +455,9 @@ paths:
         delayed jobs, repeatable jobs with a cron pattern, and repeatable jobs
         with an interval. Accepts a JSON request body with specific parameters.
       operationId: /scheduler/jobs/create
-      tags: *ref_0
-      parameters: *ref_1
+      tags:
+        - jobs
+      parameters: *ref_0
       requestBody:
         description: Job details
         required: true
@@ -577,7 +583,7 @@ paths:
                       timestamp: 1695813193081
                     meta:
                       correlation: a2bcaf3d-6010-42ba-a3e4-cf02d7138847
-          headers: *ref_2
+          headers: *ref_1
           description: Success response
         '404':
           content:
@@ -609,6 +615,141 @@ paths:
                       correlation: 05c71907-f34b-4f4a-a8ab-6224ea340ed8
           description: Failure Response
       deprecated: false
+  /scheduler/health:
+    get:
+      summary: >-
+        Performs a complete health scan including core and downstream
+        microservices.
+      description: >-
+        This API is used to verify the health status of the Scheduler Service
+        and its dependencies. 
+
+        * The API Endpoint for health check is /scheduler/health
+
+        * It is mandatory to provide values for parameters that are marked as
+        `required`
+
+        * This is a mandatory parameter and cannot be empty or null
+      operationId: ''
+      tags:
+        - healthCheck
+      parameters: []
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  ver:
+                    type: string
+                  ts:
+                    type: string
+                  params:
+                    type: object
+                    properties:
+                      resmsgid:
+                        type: string
+                      msgid:
+                        type: string
+                      status:
+                        type: string
+                      err:
+                        type: 'null'
+                      errMsg:
+                        type: 'null'
+                  status:
+                    type: number
+                  result:
+                    type: object
+                    properties:
+                      version:
+                        type: string
+                      healthy:
+                        type: boolean
+                      checks:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            healthy:
+                              type: boolean
+                            err:
+                              type: string
+                            errMsg:
+                              type: string
+              examples:
+                Success Response:
+                  value:
+                    id: schedulerService.health.api
+                    ver: '1.0'
+                    ts: '2025-07-18T06:01:23.998Z'
+                    params:
+                      resmsgid: a27303e0-639c-11f0-a23d-634d9d5b8a30
+                      msgid: a27303e1-639c-11f0-a23d-634d9d5b8a30
+                      status: successful
+                      err: null
+                      errMsg: null
+                    status: 200
+                    result:
+                      version: 1.0.0
+                      healthy: true
+                      checks:
+                        - name: redis
+                          healthy: true
+                          err: ''
+                          errMsg: ''
+        '400':
+          description: Failure Response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  ver:
+                    type: string
+                  ts:
+                    type: string
+                  params:
+                    type: object
+                    properties:
+                      resmsgid:
+                        type: string
+                      msgid:
+                        type: string
+                      status:
+                        type: string
+                      err:
+                        type: string
+                      errMsg:
+                        type: string
+                  status:
+                    type: number
+                  result:
+                    type: object
+                    properties: {}
+              examples:
+                Error Response:
+                  value:
+                    id: schedulerService.Health.API
+                    ver: '1.0'
+                    ts: '2025-07-18T04:43:35.352Z'
+                    params:
+                      resmsgid: c3b82b80-6391-11f0-9617-d554ca31487a
+                      msgid: c3b82b81-6391-11f0-9617-d554ca31487a
+                      status: failed
+                      err: CONFIG_VALIDATION_ERROR
+                      errMsg: "Missing 'url' for enabled service: redis"
+                    status: 400
+                    result: {}
 components:
   schemas:
     create-schema:
